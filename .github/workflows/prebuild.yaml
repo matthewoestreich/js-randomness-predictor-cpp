@@ -1,0 +1,61 @@
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
+        architecture: [x64]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.2.0
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build prebuilds
+        run: npm run prebuildify
+
+      - name: Get Prebuild Name
+        id: prebuild
+        shell: bash
+        run: |
+          PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
+          echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org/"
+          always-auth: true
+
+      - name: Download all prebuilds
+        uses: actions/download-artifact@v4
+        with:
+          path: prebuilds
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

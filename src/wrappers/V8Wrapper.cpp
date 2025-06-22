@@ -25,6 +25,7 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
       "v8",
       {
           V8Wrapper::InstanceMethod("predictNext", &V8Wrapper::predictNext),
+          V8Wrapper::InstanceAccessor("sequence", &V8Wrapper::getSequence, nullptr),
       }
   );
 
@@ -68,4 +69,13 @@ V8Wrapper::V8Wrapper(const Napi::CallbackInfo &info)
 
 Napi::Value V8Wrapper::predictNext(const Napi::CallbackInfo &info) {
   return Napi::Number::New(info.Env(), V8PredictorInstance->predictNext());
+}
+
+Napi::Value V8Wrapper::getSequence(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  Napi::Array result = Napi::Array::New(env, sequence.size());
+  for (size_t i = 0; i < sequence.size(); ++i) {
+    result.Set(i, Napi::Number::New(env, sequence[i]));
+  }
+  return result;
 }
