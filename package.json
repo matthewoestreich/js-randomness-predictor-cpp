@@ -32,7 +32,8 @@
 		"publish:major": "npm version major && npm run git:push:main:tags",
 		"publish:minor": "npm version minor && npm run git:push:main:tags",
 		"publish:patch": "npm version patch && npm run git:push:main:tags",
-		"format:clang": "clang-format -style=file:.clang-format -i -- src/**.cpp src/**.hpp"
+		"format:clang:cmd": "clang-format -i -style=file:.clang-format src/*.cpp src/*.hpp src/**/*.cpp src/**/*.hpp",
+		"format": "./clang-format.sh"
 	},
 	"keywords": [
     "predict javascript randomness",

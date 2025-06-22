@@ -1,6 +1,6 @@
-#include "FirefoxPredictor.hpp"
-
 #include <z3++.h>
+
+#include "FirefoxPredictor.hpp"
 
 FirefoxPredictor::FirefoxPredictor(const std::vector<double> &sequence)
   : context(),

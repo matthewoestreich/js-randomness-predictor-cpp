@@ -1,6 +1,6 @@
-#include "V8Predictor.hpp"
-#include "NodeJsVersionNapi.hpp"
 #include <napi.h>
+
+#include "V8Predictor.hpp"
 
 class V8Wrapper : public Napi::ObjectWrap<V8Wrapper> {
 public:
@@ -10,7 +10,7 @@ public:
   Napi::Value predictNext();
 
 private:
-  NodeJsVersionNapi nodeVersion;
+  NodeVersion nodeVersion;
   Napi::Value predictNext(const Napi::CallbackInfo &info);
   std::unique_ptr<V8Predictor> V8PredictorInstance;
 };
