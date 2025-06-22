@@ -32,6 +32,7 @@
 *.app
 
 # CUSTOM
+.cache/
 node_modules/
 build/
 .DS_Store

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Path to your clang-format binary (adjust if using a custom path)
+# Path to your clang-format binary
 CLANG_FORMAT=clang-format
-
 # Root directory to recursively run clang-format on
 ROOT_DIRECTORY=src/
 
@@ -12,7 +11,7 @@ if ! command -v $CLANG_FORMAT &> /dev/null; then
   exit 1
 fi
 
-# Format all .cpp and .hpp files under src/
+# Format all .cpp and .hpp files under ROOT_DIRECTORY
 find "$ROOT_DIRECTORY" -type f \( -name "*.cpp" -o -name "*.hpp" \) -print0 | while IFS= read -r -d '' file; do
   echo "Formatting $file"
   $CLANG_FORMAT -style=file -i "$file"

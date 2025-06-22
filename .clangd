@@ -1,0 +1,11 @@
+If:
+  PathMatch: /src/.*\.*
+CompileFlags:
+  CompilationDatabase: /build
+
+---
+
+If:
+  PathMatch: /tests/.*\.*
+CompileFlags:
+  CompilationDatabase: /tests/build
