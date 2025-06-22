@@ -46,6 +46,9 @@
                                 "LanguageStandard": "stdcpp20",
                             }
                         },
+                        "msbuild_settings": {
+                            "ClCompile": {"LanguageStandard": "stdcpp20"}
+                        },
                         "libraries": [
                             "<(module_root_dir)/third_party/z3/lib/win32-x64/libz3.lib"
                         ],
