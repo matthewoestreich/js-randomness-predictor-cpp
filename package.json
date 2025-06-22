@@ -1,6 +1,6 @@
 {
 	"name": "js-randomness-predictor-cpp",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Node.js native addon (C++) for high-performance Math.random() prediction",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -36,14 +36,14 @@
 		"format": "./clang-format.sh"
 	},
 	"keywords": [
-    "predict javascript randomness",
-    "predict math.random",
-    "math.random",
-    "math.random predictor",
-    "predict",
-    "predictor",
-    "z3"
-  ],
+		"predict javascript randomness",
+		"predict math.random",
+		"math.random",
+		"math.random predictor",
+		"predict",
+		"predictor",
+		"z3"
+	],
 	"author": "Matt Oestreich",
 	"license": "MIT",
 	"repository": {
