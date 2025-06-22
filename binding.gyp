@@ -16,6 +16,7 @@
                 "<!(node -p \"require('node-addon-api').targets\"):node_addon_api_except_all",
             ],
             "cflags_cc+": ["-std=c++20"],
+            "cflags!": ["-std:c++20"],
             "conditions": [
                 [
                     'OS=="mac"',
@@ -41,7 +42,9 @@
                     "OS=='win'",
                     {
                         "msvs_settings": {
-                            "VCCLCompilerTool": {"AdditionalOptions": ["/std:c++20"]}
+                            "VCCLCompilerTool": {
+                                "LanguageStandard": "stdcpp20",
+                            }
                         },
                         "libraries": [
                             "<(module_root_dir)/third_party/z3/lib/win32-x64/libz3.lib"
