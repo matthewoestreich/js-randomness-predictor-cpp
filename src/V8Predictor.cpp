@@ -1,5 +1,6 @@
 #include <bit>
 #include <cstdint>
+#include <sstream>
 
 #include "V8Predictor.hpp"
 
@@ -67,13 +68,26 @@ void V8Predictor::recoverMantissaAndAddToSolver(double value) {
     solver.add(lshr(sState0, 11) == context.bv_val(mantissa, 64));
     return;
   }
-  uint64_t mantissa = std::bit_cast<uint64_t>(value + 1) & ((1ULL << 52) - 1);
-  solver.add(context.bv_val(mantissa, 64) == lshr(sState0, 12));
+  if (nodeVersion.major < 24) {
+    uint64_t mantissa = std::bit_cast<uint64_t>(value + 1) & ((1ULL << 52) - 1);
+    solver.add(context.bv_val(mantissa, 64) == lshr(sState0, 12));
+    return;
+  }
+  std::stringstream ss;
+  ss << "[V8Predictor] Error recovering mantissa! Unrecognized Node.js Version : v" << nodeVersion.major << "."
+     << nodeVersion.minor << "." << nodeVersion.patch;
+  throw std::runtime_error(ss.str());
 }
 
 double V8Predictor::toDouble(uint64_t value) {
   if (nodeVersion.major >= 24) {
-    return std::bit_cast<double>((value >> 11) / (1ULL << 53));
+    return static_cast<double>(value >> 11) / static_cast<double>(1ULL << 53);
   }
-  return std::bit_cast<double>((value >> 12) | 0x3FF0000000000000) - 1;
+  if (nodeVersion.major < 24) {
+    return std::bit_cast<double>((value >> 12) | 0x3FF0000000000000) - 1;
+  }
+  std::stringstream ss;
+  ss << "[V8Predictor] Error converting to double! Unrecognized Node.js Version : v" << nodeVersion.major << "."
+     << nodeVersion.minor << "." << nodeVersion.patch;
+  throw std::runtime_error(ss.str());
 }
