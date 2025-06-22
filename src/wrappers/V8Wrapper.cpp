@@ -50,6 +50,8 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
+Napi::FunctionReference V8Wrapper::constructor;
+
 V8Wrapper::V8Wrapper(const Napi::CallbackInfo &info)
   : Napi::ObjectWrap<V8Wrapper>(info) {
   Napi::Env env = info.Env();

@@ -34,6 +34,8 @@ Napi::Object FirefoxWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
+Napi::FunctionReference FirefoxWrapper::constructor;
+
 FirefoxWrapper::FirefoxWrapper(const Napi::CallbackInfo &info)
   : Napi::ObjectWrap<FirefoxWrapper>(info) {
   Napi::Env env = info.Env();

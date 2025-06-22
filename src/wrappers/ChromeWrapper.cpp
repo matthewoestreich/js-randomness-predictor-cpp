@@ -34,6 +34,8 @@ Napi::Object ChromeWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
+Napi::FunctionReference ChromeWrapper::constructor;
+
 ChromeWrapper::ChromeWrapper(const Napi::CallbackInfo &info)
   : Napi::ObjectWrap<ChromeWrapper>(info) {
   Napi::Env env = info.Env();
