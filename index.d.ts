@@ -1,7 +1,14 @@
 declare module "js-randomness-predictor-cpp" {
+  interface NodeJsVersion {
+    major: number;
+    minor: number;
+    patch: number;
+  }
+
   interface V8Predictor {
     predictNext(): number;
     sequence: number[];
+    nodeVersion: NodeJsVersion;
   }
 
   interface ChromePredictor {

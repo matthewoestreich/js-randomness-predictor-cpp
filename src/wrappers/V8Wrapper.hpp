@@ -9,10 +9,11 @@ public:
   V8Wrapper(const Napi::CallbackInfo &info);
   std::vector<double> sequence;
   Napi::Value predictNext();
+  NodeVersion nodeVersion;
 
 private:
-  NodeVersion nodeVersion;
   Napi::Value predictNext(const Napi::CallbackInfo &info);
   Napi::Value getSequence(const Napi::CallbackInfo &info);
+  Napi::Value getNodeVersion(const Napi::CallbackInfo &info);
   std::unique_ptr<V8Predictor> V8PredictorInstance;
 };
