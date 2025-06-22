@@ -13,9 +13,24 @@ Napi::Object ChromeWrapper::Init(Napi::Env env, Napi::Object exports) {
       }
   );
 
-  Napi::FunctionReference *ctor = new Napi::FunctionReference();
-  *ctor = Napi::Persistent(func);
-  exports.Set("chrome", func);
+  constructor = Napi::Persistent(func);
+  constructor.SuppressDestruct();
+
+  exports.Set(
+      "chrome",
+      Napi::Function::New(
+          env,
+          [](const Napi::CallbackInfo &info) {
+            std::vector<napi_value> args(info.Length());
+            for (size_t i = 0; i < info.Length(); ++i) {
+              args[i] = info[i];
+            }
+            return constructor.New(args);
+          },
+          "chrome"
+      )
+  );
+
   return exports;
 }
 

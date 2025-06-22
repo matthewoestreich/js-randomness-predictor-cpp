@@ -5,6 +5,7 @@
 class ChromeWrapper : public Napi::ObjectWrap<ChromeWrapper> {
 public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
+  static Napi::FunctionReference constructor;
   ChromeWrapper(const Napi::CallbackInfo &info);
   std::vector<double> sequence;
   Napi::Value predictNext();

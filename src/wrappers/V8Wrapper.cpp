@@ -29,9 +29,24 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
       }
   );
 
-  Napi::FunctionReference *ctor = new Napi::FunctionReference();
-  *ctor = Napi::Persistent(func);
-  exports.Set("v8", func);
+  constructor = Napi::Persistent(func);
+  constructor.SuppressDestruct();
+
+  exports.Set(
+      "v8",
+      Napi::Function::New(
+          env,
+          [](const Napi::CallbackInfo &info) {
+            std::vector<napi_value> args(info.Length());
+            for (size_t i = 0; i < info.Length(); ++i) {
+              args[i] = info[i];
+            }
+            return constructor.New(args);
+          },
+          "v8"
+      )
+  );
+
   return exports;
 }
 

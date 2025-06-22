@@ -5,6 +5,7 @@
 class FirefoxWrapper : public Napi::ObjectWrap<FirefoxWrapper> {
 public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
+  static Napi::FunctionReference constructor;
   FirefoxWrapper(const Napi::CallbackInfo &info);
   std::vector<double> sequence;
   Napi::Value predictNext();
