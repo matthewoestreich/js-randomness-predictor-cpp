@@ -1,0 +1,12 @@
+Language: Cpp
+BasedOnStyle: LLVM
+AllowShortIfStatementsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: false
+ColumnLimit: 120
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 2
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+AllowAllConstructorInitializersOnNextLine: false
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent
+PackConstructorInitializers: Never

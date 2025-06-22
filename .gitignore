@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# CUSTOM
+node_modules/
+build/
+.DS_Store
+!third_party/z3/lib/**/*.*
