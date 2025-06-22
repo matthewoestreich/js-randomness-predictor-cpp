@@ -24,24 +24,24 @@ pnpm add js-randomness-predictor-cpp
 
 ```js
 // ESM
-import JSRandomnessPredictor from "js-randomness-predictor-cpp";
+import JSRandomnessPredictorCpp from "js-randomness-predictor-cpp";
 // CJS
-const JSRandomnessPredictor = require("js-randomness-predictor-cpp");
+const JSRandomnessPredictorCpp = require("js-randomness-predictor-cpp");
 ```
 
 ## Chrome Predictor
 
 ```js
-const chromePredictor = JSRandomnessPredictor.chrome([...]);
-const nextPrediction = await chromePredictor.predictNext();
+const chromePredictor = JSRandomnessPredictorCpp.chrome([...]);
+const nextPrediction = chromePredictor.predictNext();
 // You'll need to manually verify accuracy.
 ```
 
 ## Firefox Predictor
 
 ```js
-const firefoxPredictor = JSRandomnessPredictor.firefox([...]);
-const nextPrediction = await firefoxPredictor.predictNext();
+const firefoxPredictor = JSRandomnessPredictorCpp.firefox([...]);
+const nextPrediction = firefoxPredictor.predictNext();
 // You'll need to manually verify accuracy.
 ```
 
@@ -96,7 +96,7 @@ const manualSequence = [
   /* copy/paste numbers generated via REPL */
 ];
 const v8Predictor = JSRandomnessPredictorCpp.v8(manualSequence);
-const nextPrediction = await v8Predictor.predictNext();
+const nextPrediction = v8Predictor.predictNext();
 // We can programmatically verify since we are running in Node.
 const isAccurate = nextPrediction === Math.random();
 ```
@@ -106,8 +106,8 @@ const isAccurate = nextPrediction === Math.random();
 ```js
 // Automatically create sequence behind the scenes because
 // parameter not provided to 'v8' method.
-const v8Predictor = JSRandomnessPredictor.v8();
-const nextPrediction = await v8Predictor.predictNext();
+const v8Predictor = JSRandomnessPredictorCpp.v8();
+const nextPrediction = v8Predictor.predictNext();
 // We can programmatically verify since we are running in Node.
 const isAccurate = nextPrediction === Math.random();
 ```
