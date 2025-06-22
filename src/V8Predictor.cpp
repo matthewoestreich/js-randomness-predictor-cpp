@@ -1,3 +1,4 @@
+#include <bit>
 #include <cstdint>
 
 #include "V8Predictor.hpp"
