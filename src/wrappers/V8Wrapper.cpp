@@ -26,7 +26,7 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
       {
           V8Wrapper::InstanceMethod("predictNext", &V8Wrapper::predictNext),
           V8Wrapper::InstanceAccessor("sequence", &V8Wrapper::getSequence, nullptr),
-          V8Wrapper::InstanceAccessor("nodejsVersion", &V8Wrapper::getNodeVersion, nullptr),
+          V8Wrapper::InstanceAccessor("nodeVersion", &V8Wrapper::getNodeVersion, nullptr),
       }
   );
 
