@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
-#include "../src/V8Predictor.hpp"
+#include "V8Predictor.hpp"
 
 TEST_CASE("V8Predictor : Node.js Version 22.0.0", "[V8Predictor, v22.0.0]") {
   SECTION("[v22.0.0] should correctly predict next random numbers") {

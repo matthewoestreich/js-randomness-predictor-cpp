@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/ChromePredictor.hpp"
+#include "ChromePredictor.hpp"
 
 TEST_CASE("ChromePredictor", "[ChromePredictor]") {
   std::vector<double> sequence{

@@ -3,8 +3,7 @@
         {
             "target_name": "js-randomness-predictor-cpp",
             "sources": [
-                "<!@(ls -1 src/*.cpp)",
-                "<!@(ls -1 src/wrappers/*.cpp)",
+                "<!@(node scripts/get-cpp-sources-for-binding-gyp.mjs)"
             ],
             "include_dirs": [
                 "src/",
@@ -15,8 +14,6 @@
             "dependencies": [
                 "<!(node -p \"require('node-addon-api').targets\"):node_addon_api_except_all",
             ],
-            "cflags_cc+": ["-std=c++20"],
-            "cflags!": ["-std:c++20"],
             "conditions": [
                 [
                     'OS=="mac"',
@@ -41,14 +38,6 @@
                 [
                     "OS=='win'",
                     {
-                        "msvs_settings": {
-                            "VCCLCompilerTool": {
-                                "LanguageStandard": "stdcpp20",
-                            }
-                        },
-                        "msbuild_settings": {
-                            "ClCompile": {"LanguageStandard": "stdcpp20"}
-                        },
                         "libraries": [
                             "<(module_root_dir)/third_party/z3/lib/win32-x64/libz3.lib"
                         ],

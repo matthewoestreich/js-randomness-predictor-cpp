@@ -25,6 +25,7 @@
 		"install": "echo \"[DELIBERATE] npm install NOOP\"",
 		"prebuildify": "prebuildify --napi",
 		"configure": "node-gyp configure",
+		"configure:verbose": "node-gyp configure --verbose",
 		"build": "node-gyp build",
 		"build:bear": "bear --output build/compile_commands.json -- node-gyp configure build",
 		"clean": "node-gyp clean",
@@ -32,9 +33,8 @@
 		"publish:major": "npm version major && npm run git:push:main:tags",
 		"publish:minor": "npm version minor && npm run git:push:main:tags",
 		"publish:patch": "npm version patch && npm run git:push:main:tags",
-		"format:clang:cmd": "clang-format -i -style=file:.clang-format src/*.cpp src/*.hpp src/**/*.cpp src/**/*.hpp",
-		"format": "bash clang-format.sh",
-		"test": "bash tests/build-and-run-tests.sh"
+		"format": "node scripts/clang-format.mjs",
+		"test": "node scripts/build-and-run-tests.mjs"
 	},
 	"keywords": [
 		"predict javascript randomness",

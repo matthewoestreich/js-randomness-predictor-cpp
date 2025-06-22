@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/FirefoxPredictor.hpp"
+#include "FirefoxPredictor.hpp"
 
 TEST_CASE("FirefoxPredictor", "[FirefoxPredictor]") {
   std::vector<double> sequence{
