@@ -11,7 +11,6 @@
   },
   "binary": {
     "module_name": "js-randomness-predictor-cpp",
-    "module_path": "./prebuilds/{platform}-{arch}/",
     "host": "https://github.com/matthewoestreich/js-randomness-predictor-cpp/releases/download/"
   },
   "files": [
@@ -24,7 +23,7 @@
   ],
   "scripts": {
     "preinstall": "prebuild-install || echo \"Falling back to build from source\"",
-    "prebuild": "prebuild --backend node-gyp --upload-all",
+    "prebuild": "prebuild --backend node-gyp && prebuild --backend node-gyp --upload-all",
     "configure": "node-gyp configure",
     "configure:verbose": "node-gyp configure --verbose",
     "build": "node-gyp build",
