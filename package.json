@@ -1,6 +1,6 @@
 {
   "name": "js-randomness-predictor-cpp",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Node.js native addon (C++) for high-performance Math.random() prediction",
   "main": "index.js",
   "types": "index.d.ts",
@@ -23,8 +23,8 @@
     "index.d.ts"
   ],
   "scripts": {
-		"preinstall": "prebuild-install || echo \"Falling back to build from source\"",
-  	"prebuild": "prebuild --upload-all",
+    "preinstall": "prebuild-install || echo \"Falling back to build from source\"",
+    "prebuild": "prebuild --upload-all",
     "install": "echo \"[DELIBERATE] npm install NOOP\"",
     "configure": "node-gyp configure",
     "configure:verbose": "node-gyp configure --verbose",
