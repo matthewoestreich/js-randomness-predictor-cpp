@@ -13,9 +13,10 @@ import path from "node:path";
 // Relative to this files current location
 const RELATIVE_PROJECT_ROOT = "..";
 // Relative to this files current location
-const DIRECTORY_TO_FIND_FILES_IN = "../src";
-const ROOT_FOLDER = path.resolve(import.meta.dirname, DIRECTORY_TO_FIND_FILES_IN);
+const ROOT_FOLDER = path.resolve(import.meta.dirname, "../src");
 const cppFiles = getAllFilesWithExtensionRecursively(ROOT_FOLDER, ".cpp");
+
+// Must log to console so the .gyp file can read it.
 console.log(cppFiles.join(" "));
 
 /**
