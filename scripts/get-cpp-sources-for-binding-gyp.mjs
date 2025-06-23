@@ -29,12 +29,12 @@ function getAllFilesWithExtensionRecursively(rootDirectory, fileExtension) {
   const allFilesAndDirectories = fs.readdirSync(rootDirectory, { withFileTypes: true });
 
   for (const fileOrDirectory of allFilesAndDirectories) {
-		const fullPath = path.join(fileOrDirectory.parentPath, fileOrDirectory.name);
+    const fullPath = path.join(fileOrDirectory.parentPath, fileOrDirectory.name);
 
     if (fileOrDirectory.isDirectory()) {
       results.push(...getAllFilesWithExtensionRecursively(fullPath, fileExtension));
     } else if (fileOrDirectory.isFile() && fullPath.endsWith(fileExtension)) {
-      results.push(path.relative(path.resolve(import.meta.dirname, RELATIVE_PROJECT_ROOT), fullPath));
+      results.push(path.relative(path.resolve(import.meta.dirname, RELATIVE_PROJECT_ROOT), fullPath).replace("/\\/g", "/"));
     }
   }
 
