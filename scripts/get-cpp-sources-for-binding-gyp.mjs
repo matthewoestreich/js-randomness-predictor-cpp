@@ -28,7 +28,7 @@ function getAllFilesWithExtensionRecursively(rootDirectory, fileExtension) {
   const allFilesAndDirectories = fs.readdirSync(rootDirectory, { withFileTypes: true });
 
   for (const fileOrDirectory of allFilesAndDirectories) {
-    const fullPath = fileOrDirectory.parentPath + "/" + fileOrDirectory.name;
+		const fullPath = path.join(fileOrDirectory.parentPath, fileOrDirectory.name);
 
     if (fileOrDirectory.isDirectory()) {
       results.push(...getAllFilesWithExtensionRecursively(fullPath, fileExtension));
