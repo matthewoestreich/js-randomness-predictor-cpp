@@ -1,62 +1,65 @@
 {
-	"name": "js-randomness-predictor-cpp",
-	"version": "1.0.8",
-	"description": "Node.js native addon (C++) for high-performance Math.random() prediction",
-	"main": "index.js",
-	"types": "index.d.ts",
-	"exports": {
-		"import": "./index.mjs",
-		"require": "./index.cjs",
-		"types": "./index.d.ts"
-	},
-	"binary": {
-		"module_name": "js-randomness-predictor-cpp",
-		"module_path": "prebuilds/{platform}-{arch}/"
-	},
-	"files": [
-		"prebuilds/",
-		"binding.gyp",
-		"index.cjs",
-		"index.mjs",
-		"index.js",
-		"index.d.ts"
-	],
-	"scripts": {
-		"install": "echo \"[DELIBERATE] npm install NOOP\"",
-		"prebuildify": "prebuildify --napi",
-		"configure": "node-gyp configure",
-		"configure:verbose": "node-gyp configure --verbose",
-		"build": "node-gyp build",
-		"build:bear": "bear --output build/compile_commands.json -- node-gyp configure build",
-		"clean": "node-gyp clean",
-		"git:push:main:tags": "git push origin main --tags",
-		"publish:major": "npm version major && npm run git:push:main:tags",
-		"publish:minor": "npm version minor && npm run git:push:main:tags",
-		"publish:patch": "npm version patch && npm run git:push:main:tags",
-		"format": "node scripts/clang-format.mjs",
-		"test": "node scripts/build-and-run-tests.mjs"
-	},
-	"keywords": [
-		"predict javascript randomness",
-		"predict math.random",
-		"math.random",
-		"math.random predictor",
-		"predict",
-		"predictor",
-		"z3"
-	],
-	"author": "Matt Oestreich",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/matthewoestreich/js-randomness-predictor-cpp.git"
-	},
-	"dependencies": {
-		"node-addon-api": "^8.4.0",
-		"node-gyp": "^11.2.0",
-		"node-gyp-build": "^4.8.4"
-	},
-	"devDependencies": {
-		"prebuildify": "^6.0.1"
-	}
+  "name": "js-randomness-predictor-cpp",
+  "version": "1.0.8",
+  "description": "Node.js native addon (C++) for high-performance Math.random() prediction",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./index.cjs",
+    "types": "./index.d.ts"
+  },
+  "binary": {
+    "module_name": "js-randomness-predictor-cpp",
+    "module_path": "./prebuilds/{platform}-{arch}/",
+    "host": "https://github.com/matthewoestreich/js-randomness-predictor-cpp/releases/download/"
+  },
+  "files": [
+    "prebuilds/",
+    "binding.gyp",
+    "index.cjs",
+    "index.mjs",
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+		"preinstall": "prebuild-install || echo \"Falling back to build from source\"",
+  	"prebuild": "prebuild --upload-all",
+    "install": "echo \"[DELIBERATE] npm install NOOP\"",
+    "configure": "node-gyp configure",
+    "configure:verbose": "node-gyp configure --verbose",
+    "build": "node-gyp build",
+    "build:bear": "bear --output build/compile_commands.json -- node-gyp configure build",
+    "clean": "node-gyp clean",
+    "git:push:main:tags": "git push origin main --tags",
+    "publish:main:major": "npm version major && npm publish && git push origin main",
+    "publish:main:minor": "npm version minor && npm publish && git push origin main",
+    "publish:main:patch": "npm version patch && npm publish && git push origin main",
+    "format": "node scripts/clang-format.mjs",
+    "test": "node scripts/build-and-run-tests.mjs"
+  },
+  "keywords": [
+    "predict javascript randomness",
+    "predict math.random",
+    "math.random",
+    "math.random predictor",
+    "predict",
+    "predictor",
+    "z3"
+  ],
+  "author": "Matt Oestreich",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthewoestreich/js-randomness-predictor-cpp.git"
+  },
+  "dependencies": {
+    "node-addon-api": "^8.4.0",
+    "node-gyp": "^11.2.0",
+    "node-gyp-build": "^4.8.4",
+    "prebuild-install": "^7.1.3"
+  },
+  "devDependencies": {
+    "prebuild": "^13.0.1"
+  }
 }
