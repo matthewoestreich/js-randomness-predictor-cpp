@@ -25,7 +25,6 @@
   "scripts": {
     "preinstall": "prebuild-install || echo \"Falling back to build from source\"",
     "prebuild": "prebuild --upload-all",
-    "install": "echo \"[DELIBERATE] npm install NOOP\"",
     "configure": "node-gyp configure",
     "configure:verbose": "node-gyp configure --verbose",
     "build": "node-gyp build",
