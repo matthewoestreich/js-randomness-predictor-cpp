@@ -24,18 +24,18 @@ console.log(cppFiles.join(" "));
  * @returns {void}
  */
 function getAllFilesWithExtensionRecursively(rootDirectory, fileExtension) {
-	const results = [];
-	const allFilesAndDirectories = fs.readdirSync(rootDirectory, { withFileTypes: true });
+  const results = [];
+  const allFilesAndDirectories = fs.readdirSync(rootDirectory, { withFileTypes: true });
 
-	for (const fileOrDirectory of allFilesAndDirectories) {
-		const fullPath = fileOrDirectory.parentPath + "/" + fileOrDirectory.name;
+  for (const fileOrDirectory of allFilesAndDirectories) {
+    const fullPath = fileOrDirectory.parentPath + "/" + fileOrDirectory.name;
 
-		if (fileOrDirectory.isDirectory()) {
-			results.push(...getAllFilesWithExtensionRecursively(fullPath, fileExtension));
-		} else if (fileOrDirectory.isFile() && fullPath.endsWith(fileExtension)) {
-			results.push(path.relative(path.resolve(import.meta.dirname, RELATIVE_PROJECT_ROOT), fullPath));
-		}
-	}
+    if (fileOrDirectory.isDirectory()) {
+      results.push(...getAllFilesWithExtensionRecursively(fullPath, fileExtension));
+    } else if (fileOrDirectory.isFile() && fullPath.endsWith(fileExtension)) {
+      results.push(path.relative(path.resolve(import.meta.dirname, RELATIVE_PROJECT_ROOT), fullPath));
+    }
+  }
 
-	return results;
+  return results;
 }

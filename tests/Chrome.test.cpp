@@ -19,7 +19,7 @@ TEST_CASE("ChromePredictor", "[ChromePredictor]") {
   };
 
   SECTION("should correctly predict next random numbers") {
-    ChromePredictor chrome(sequence);
+    ChromePredictor chrome{sequence};
     std::vector<double> predictions;
 
     for (size_t i = 0; i < expected.size(); ++i) {

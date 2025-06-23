@@ -5,10 +5,12 @@
 class ChromePredictor {
 public:
   ChromePredictor(const std::vector<double> &sequence);
+  const std::vector<double> &getSequence() const;
   double predictNext();
 
 private:
   std::vector<double> sequence;
+  std::vector<double> internalSequence;
   uint64_t cState0;
   uint64_t cState1;
   z3::context context;

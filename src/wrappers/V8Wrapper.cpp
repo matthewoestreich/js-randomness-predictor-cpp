@@ -1,10 +1,14 @@
+#include <cstddef>
 #include <napi.h>
 #include <regex>
 
 #include "V8Predictor.hpp"
 #include "V8Wrapper.hpp"
 
-NodeVersion getNodeVersionFromEnv(const Napi::Env &env) {
+/*
+  Gets current Node.js version.
+*/
+NodeVersion getCurrentNodeVersion(const Napi::Env &env) {
   // For finding the current node version
   Napi::Object process = env.Global().Get("process").As<Napi::Object>();
   std::string version = process.Get("version").As<Napi::String>().Utf8Value();
@@ -19,6 +23,24 @@ NodeVersion getNodeVersionFromEnv(const Napi::Env &env) {
   return nodeVersion;
 }
 
+/*
+  Calls `Math.random()` in native code.
+*/
+double MathRandom(const Napi::Env &env) {
+  Napi::Object global = env.Global();
+  Napi::Object math = global.Get("Math").As<Napi::Object>();
+  Napi::Function randomFn = math.Get("random").As<Napi::Function>();
+  return randomFn.Call(math, {}).As<Napi::Number>().DoubleValue();
+}
+
+/*
+  Reference to V8Wrapper constructor.
+*/
+Napi::FunctionReference V8Wrapper::constructor;
+
+/*
+  Initialize our V8Wrapper.
+*/
 Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = V8Wrapper::DefineClass(
       env,
@@ -51,58 +73,78 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-Napi::FunctionReference V8Wrapper::constructor;
-
+/*
+  Create V8Wrapper.
+*/
 V8Wrapper::V8Wrapper(const Napi::CallbackInfo &info)
-  : Napi::ObjectWrap<V8Wrapper>(info) {
+    : Napi::ObjectWrap<V8Wrapper>(info) {
   Napi::Env env = info.Env();
-  nodeVersion = getNodeVersionFromEnv(env);
   Napi::Value maybeSequence = info[0];
 
+  std::vector<double> _sequence;
+
   if (info.Length() == 0 || maybeSequence.IsUndefined()) {
-    // Call Math.random() 4 times
-    Napi::Object global = env.Global();
-    Napi::Object math = global.Get("Math").As<Napi::Object>();
-    Napi::Function randomFn = math.Get("random").As<Napi::Function>();
-    for (int i = 0; i < 4; ++i) {
-      double value = randomFn.Call(math, {}).As<Napi::Number>().DoubleValue();
-      sequence.push_back(value);
+    for (size_t i = 0; i < 4; ++i) {
+      _sequence.push_back(MathRandom(env));
     }
-    V8PredictorInstance = std::make_unique<V8Predictor>(nodeVersion, sequence);
+
+    V8PredictorInstance = std::make_unique<V8Predictor>(getCurrentNodeVersion(env), std::move(_sequence));
     return;
   }
 
   if (maybeSequence.IsArray()) {
-    Napi::Array _sequence = maybeSequence.As<Napi::Array>();
-    for (uint32_t i = 0; i < _sequence.Length(); ++i) {
-      double val = _sequence.Get(i).As<Napi::Number>().DoubleValue();
-      sequence.push_back(val);
+    Napi::Array sequence = maybeSequence.As<Napi::Array>();
+    std::vector<double> _sequence;
+
+    for (size_t i = 0; i < sequence.Length(); ++i) {
+      Napi::MaybeOrValue<Napi::Value> val = sequence.Get(i);
+      if (val.IsUndefined() || val.IsNull() || !val.IsNumber()) {
+        Napi::TypeError::New(env, "Expected number").ThrowAsJavaScriptException();
+        return;
+      }
+      _sequence.push_back(val.As<Napi::Number>().DoubleValue());
     }
-    V8PredictorInstance = std::make_unique<V8Predictor>(nodeVersion, sequence);
+
+    V8PredictorInstance = std::make_unique<V8Predictor>(getCurrentNodeVersion(env), std::move(_sequence));
     return;
   }
 
   Napi::TypeError::New(env, "Expected number[]").ThrowAsJavaScriptException();
 }
 
+/*
+   Predict next random number.
+*/
 Napi::Value V8Wrapper::predictNext(const Napi::CallbackInfo &info) {
   return Napi::Number::New(info.Env(), V8PredictorInstance->predictNext());
 }
 
+/*
+  Get sequence as expected type.
+*/
 Napi::Value V8Wrapper::getSequence(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  Napi::Array result = Napi::Array::New(env, sequence.size());
-  for (size_t i = 0; i < sequence.size(); ++i) {
-    result.Set(i, Napi::Number::New(env, sequence[i]));
+  std::vector<double> instanceSequence = V8PredictorInstance->getSequence();
+  Napi::Array result = Napi::Array::New(env, instanceSequence.size());
+
+  for (size_t i = 0; i < instanceSequence.size(); ++i) {
+    result.Set(i, Napi::Number::New(env, instanceSequence[i]));
   }
+
   return result;
 }
 
+/*
+  Gets Node.js version from our class as expected type.
+*/
 Napi::Value V8Wrapper::getNodeVersion(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   Napi::Object obj = Napi::Object::New(env);
-  obj.Set("major", Napi::Number::New(env, nodeVersion.major));
-  obj.Set("minor", Napi::Number::New(env, nodeVersion.minor));
-  obj.Set("patch", Napi::Number::New(env, nodeVersion.patch));
+  NodeVersion nv = V8PredictorInstance->getNodeVersion();
+
+  obj.Set("major", Napi::Number::New(env, nv.major));
+  obj.Set("minor", Napi::Number::New(env, nv.minor));
+  obj.Set("patch", Napi::Number::New(env, nv.patch));
+
   return obj;
 }

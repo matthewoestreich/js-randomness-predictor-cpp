@@ -3,7 +3,7 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: false
 ColumnLimit: 120
 BreakConstructorInitializers: BeforeColon
-ConstructorInitializerIndentWidth: 2
+ConstructorInitializerIndentWidth: 4
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 AllowAllConstructorInitializersOnNextLine: false
 BinPackArguments: false

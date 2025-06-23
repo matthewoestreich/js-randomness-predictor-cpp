@@ -16,8 +16,8 @@ TEST_CASE("V8Predictor : Node.js Version 22.0.0", "[V8Predictor, v22.0.0]") {
         0.3345277284146617,
         0.42618019812863417
     };
-    NodeVersion v22_0_0 = NodeVersion{.major = 22, .minor = 0, .patch = 0};
-    V8Predictor v8(v22_0_0, sequence_v22_0_0);
+    NodeVersion v22_0_0 = NodeVersion{22, 0, 0};
+    V8Predictor v8{v22_0_0, sequence_v22_0_0};
     std::vector<double> predictions_v22_0_0;
 
     for (size_t i = 0; i < expected_v22_0_0.size(); ++i) {
@@ -43,7 +43,7 @@ TEST_CASE("V8Predictor : Node.js Version 24.2.0", "[V8Predictor, v24.2.0]") {
     };
     try {
       NodeVersion v24_2_0 = NodeVersion{.major = 24, .minor = 2, .patch = 0};
-      V8Predictor v8_v24_2_0(v24_2_0, sequence_v24_2_0);
+      V8Predictor v8_v24_2_0{v24_2_0, sequence_v24_2_0};
       std::vector<double> predictions_v24_2_0;
 
       for (size_t i = 0; i < expected_v24_2_0.size(); ++i) {

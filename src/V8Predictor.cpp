@@ -5,15 +5,16 @@
 #include "V8Predictor.hpp"
 
 V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &sequence)
-  : nodeVersion(version),
-    context(),
-    solver(context),
-    sState0(context.bv_const("se_state0", 64)),
-    sState1(context.bv_const("se_state1", 64)) {
-  this->sequence = sequence;
-  reverse(this->sequence.begin(), this->sequence.end());
+    : sequence(sequence),
+      nodeVersion(version),
+      internalSequence(sequence),
+      context(),
+      solver(context),
+      sState0(context.bv_const("se_state0", 64)),
+      sState1(context.bv_const("se_state1", 64)) {
+  reverse(this->internalSequence.begin(), this->internalSequence.end());
 
-  for (double observed : this->sequence) {
+  for (double observed : this->internalSequence) {
     xorShift128PlusSymbolic();
     recoverMantissaAndAddToSolver(observed);
   }
@@ -27,9 +28,17 @@ V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &
   cState1 = model.eval(sState1).as_uint64();
 
   // We need to get concrete state up to symbolic state..
-  for (size_t i = 0; i < this->sequence.size(); ++i) {
+  for (size_t i = 0; i < this->internalSequence.size(); ++i) {
     xorShift128PlusConcrete();
   }
+}
+
+const std::vector<double> &V8Predictor::getSequence() const {
+  return this->sequence;
+}
+
+const NodeVersion &V8Predictor::getNodeVersion() const {
+  return this->nodeVersion;
 }
 
 double V8Predictor::predictNext() {

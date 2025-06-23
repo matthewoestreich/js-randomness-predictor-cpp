@@ -7,18 +7,18 @@ declare module "js-randomness-predictor-cpp" {
 
   interface V8Predictor {
     predictNext(): number;
-    sequence: number[];
-    nodeVersion: NodeJsVersion;
+    get sequence(): number[];
+    get nodeVersion(): NodeJsVersion;
   }
 
   interface ChromePredictor {
     predictNext(): number;
-    sequence: number[];
+    get sequence(): number[];
   }
 
   interface FirefoxPredictor {
     predictNext(): number;
-    sequence: number[];
+    get sequence(): number[];
   }
 
   function v8(sequence?: number[]): V8Predictor;
@@ -29,7 +29,7 @@ declare module "js-randomness-predictor-cpp" {
     v8: typeof v8;
     chrome: typeof chrome;
     firefox: typeof firefox;
-  }
+  };
 
   export = JSRandomnessPredictorCpp;
 }

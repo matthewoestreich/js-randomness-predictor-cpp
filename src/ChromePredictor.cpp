@@ -3,14 +3,15 @@
 #include "ChromePredictor.hpp"
 
 ChromePredictor::ChromePredictor(const std::vector<double> &sequence)
-  : context(),
-    solver(context),
-    sState0(context.bv_const("se_state0", 64)),
-    sState1(context.bv_const("se_state1", 64)) {
-  this->sequence = sequence;
-  reverse(this->sequence.begin(), this->sequence.end());
+    : sequence(sequence),
+      internalSequence(sequence),
+      context(),
+      solver(context),
+      sState0(context.bv_const("se_state0", 64)),
+      sState1(context.bv_const("se_state1", 64)) {
+  reverse(this->internalSequence.begin(), this->internalSequence.end());
 
-  for (double observed : this->sequence) {
+  for (double observed : this->internalSequence) {
     xorShift128PlusSymbolic();
     uint64_t mantissa = recoverMantissa(observed);
     solver.add(context.bv_val(mantissa, 64) == lshr(sState0, 11));
@@ -25,9 +26,13 @@ ChromePredictor::ChromePredictor(const std::vector<double> &sequence)
   cState1 = model.eval(sState1).as_uint64();
 
   // We need to catch concrete state up to symbolic state
-  for (size_t i = 0; i < this->sequence.size(); ++i) {
+  for (size_t i = 0; i < this->internalSequence.size(); ++i) {
     xorShift128PlusConcrete();
   }
+}
+
+const std::vector<double> &ChromePredictor::getSequence() const {
+  return this->sequence;
 }
 
 double ChromePredictor::predictNext() {

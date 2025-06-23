@@ -6,10 +6,8 @@ class V8Wrapper : public Napi::ObjectWrap<V8Wrapper> {
 public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
   static Napi::FunctionReference constructor;
+
   V8Wrapper(const Napi::CallbackInfo &info);
-  std::vector<double> sequence;
-  Napi::Value predictNext();
-  NodeVersion nodeVersion;
 
 private:
   Napi::Value predictNext(const Napi::CallbackInfo &info);

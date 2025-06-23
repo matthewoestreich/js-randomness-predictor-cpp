@@ -24,7 +24,7 @@ TEST_CASE("FirefoxPredictor", "[FirefoxPredictor]") {
   };
 
   SECTION("should correctly predict next random numbers") {
-    FirefoxPredictor firefox(sequence);
+    FirefoxPredictor firefox{sequence};
     std::vector<double> predictions;
 
     for (size_t i = 0; i < expected.size(); ++i) {

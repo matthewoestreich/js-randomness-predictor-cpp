@@ -3,13 +3,12 @@
 #include "FirefoxPredictor.hpp"
 
 FirefoxPredictor::FirefoxPredictor(const std::vector<double> &sequence)
-  : context(),
-    solver(context),
-    sState0(context.bv_const("se_state0", 64)),
-    sState1(context.bv_const("se_state1", 64)),
-    kDoubleSignificantMaskSymbolic(context.bv_val(kDoubleSignificantMask, 64)) {
-  this->sequence = sequence;
-
+    : sequence(sequence),
+      context(),
+      solver(context),
+      sState0(context.bv_const("se_state0", 64)),
+      sState1(context.bv_const("se_state1", 64)),
+      kDoubleSignificantMaskSymbolic(context.bv_val(kDoubleSignificantMask, 64)) {
   for (double observed : this->sequence) {
     uint64_t mantissa = recoverMantissa(observed);
     xorShift128PlusSymbolic();
@@ -23,6 +22,10 @@ FirefoxPredictor::FirefoxPredictor(const std::vector<double> &sequence)
   z3::model model = solver.get_model();
   cState0 = model.eval(sState0).as_uint64();
   cState1 = model.eval(sState1).as_uint64();
+}
+
+const std::vector<double> &FirefoxPredictor::getSequence() const {
+  return this->sequence;
 }
 
 double FirefoxPredictor::predictNext() {

@@ -1,8 +1,12 @@
+#include <cstddef>
 #include <napi.h>
 
 #include "FirefoxPredictor.hpp"
 #include "FirefoxWrapper.hpp"
 
+/*
+  Initialize our FirefoxWrapper.
+*/
 Napi::Object FirefoxWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = FirefoxWrapper::DefineClass(
       env,
@@ -34,10 +38,16 @@ Napi::Object FirefoxWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
+/*
+  Reference to FirefoxWrapper constructor.
+*/
 Napi::FunctionReference FirefoxWrapper::constructor;
 
+/*
+  Create new FirefoxWrapper.
+*/
 FirefoxWrapper::FirefoxWrapper(const Napi::CallbackInfo &info)
-  : Napi::ObjectWrap<FirefoxWrapper>(info) {
+    : Napi::ObjectWrap<FirefoxWrapper>(info) {
   Napi::Env env = info.Env();
   Napi::Value maybeSequence = info[0];
 
@@ -46,23 +56,39 @@ FirefoxWrapper::FirefoxWrapper(const Napi::CallbackInfo &info)
     return;
   }
 
-  Napi::Array _sequence = maybeSequence.As<Napi::Array>();
-  for (uint32_t i = 0; i < _sequence.Length(); ++i) {
-    double val = _sequence.Get(i).As<Napi::Number>().DoubleValue();
-    sequence.push_back(val);
+  Napi::Array sequence = maybeSequence.As<Napi::Array>();
+  std::vector<double> _sequence;
+
+  for (size_t i = 0; i < sequence.Length(); ++i) {
+    Napi::MaybeOrValue<Napi::Value> val = sequence.Get(i);
+    if (val.IsUndefined() || val.IsNull() || !val.IsNumber()) {
+      Napi::TypeError::New(env, "Expected number").ThrowAsJavaScriptException();
+      return;
+    }
+    _sequence.push_back(val.As<Napi::Number>().DoubleValue());
   }
-  FirefoxPredictorInstance = std::make_unique<FirefoxPredictor>(sequence);
+
+  FirefoxPredictorInstance = std::make_unique<FirefoxPredictor>(std::move(_sequence));
 }
 
+/*
+  Predict next random number.
+*/
 Napi::Value FirefoxWrapper::predictNext(const Napi::CallbackInfo &info) {
   return Napi::Number::New(info.Env(), FirefoxPredictorInstance->predictNext());
 }
 
+/*
+  Native method to get our sequence as expected type.
+*/
 Napi::Value FirefoxWrapper::getSequence(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  Napi::Array result = Napi::Array::New(env, sequence.size());
-  for (size_t i = 0; i < sequence.size(); ++i) {
-    result.Set(i, Napi::Number::New(env, sequence[i]));
+  std::vector<double> instanceSequence = FirefoxPredictorInstance->getSequence();
+  Napi::Array result = Napi::Array::New(env, instanceSequence.size());
+
+  for (size_t i = 0; i < instanceSequence.size(); ++i) {
+    result.Set(i, Napi::Number::New(env, instanceSequence[i]));
   }
+
   return result;
 }

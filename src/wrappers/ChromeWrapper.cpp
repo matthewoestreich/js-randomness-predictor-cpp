@@ -1,8 +1,12 @@
+#include <cstddef>
 #include <napi.h>
 
 #include "ChromePredictor.hpp"
 #include "ChromeWrapper.hpp"
 
+/*
+  Initialize our ChromeWrapper.
+*/
 Napi::Object ChromeWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = ChromeWrapper::DefineClass(
       env,
@@ -34,10 +38,16 @@ Napi::Object ChromeWrapper::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
+/*
+  Reference to ChromeWrapper constructor.
+*/
 Napi::FunctionReference ChromeWrapper::constructor;
 
+/*
+  Create new ChromeWrapper.
+*/
 ChromeWrapper::ChromeWrapper(const Napi::CallbackInfo &info)
-  : Napi::ObjectWrap<ChromeWrapper>(info) {
+    : Napi::ObjectWrap<ChromeWrapper>(info) {
   Napi::Env env = info.Env();
   Napi::Value maybeSequence = info[0];
 
@@ -46,23 +56,39 @@ ChromeWrapper::ChromeWrapper(const Napi::CallbackInfo &info)
     return;
   }
 
-  Napi::Array _sequence = maybeSequence.As<Napi::Array>();
-  for (uint32_t i = 0; i < _sequence.Length(); ++i) {
-    double val = _sequence.Get(i).As<Napi::Number>().DoubleValue();
-    sequence.push_back(val);
+  Napi::Array sequence = maybeSequence.As<Napi::Array>();
+  std::vector<double> _sequence;
+
+  for (size_t i = 0; i < sequence.Length(); ++i) {
+    Napi::MaybeOrValue<Napi::Value> val = sequence.Get(i);
+    if (val.IsUndefined() || val.IsNull() || !val.IsNumber()) {
+      Napi::TypeError::New(env, "Expected number").ThrowAsJavaScriptException();
+      return;
+    }
+    _sequence.push_back(val.As<Napi::Number>().DoubleValue());
   }
-  ChromePredictorInstance = std::make_unique<ChromePredictor>(sequence);
+
+  ChromePredictorInstance = std::make_unique<ChromePredictor>(std::move(_sequence));
 }
 
+/*
+  Predict next random value.
+*/
 Napi::Value ChromeWrapper::predictNext(const Napi::CallbackInfo &info) {
   return Napi::Number::New(info.Env(), ChromePredictorInstance->predictNext());
 }
 
+/*
+  Get sequence as expected type.
+*/
 Napi::Value ChromeWrapper::getSequence(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  Napi::Array result = Napi::Array::New(env, sequence.size());
-  for (size_t i = 0; i < sequence.size(); ++i) {
-    result.Set(i, Napi::Number::New(env, sequence[i]));
+  std::vector<double> instanceSequence = ChromePredictorInstance->getSequence();
+  Napi::Array result = Napi::Array::New(env, instanceSequence.size());
+
+  for (size_t i = 0; i < instanceSequence.size(); ++i) {
+    result.Set(i, Napi::Number::New(env, instanceSequence[i]));
   }
+
   return result;
 }
