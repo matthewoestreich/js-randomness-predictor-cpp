@@ -36,30 +36,18 @@ jobs:
           DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
           cp "$DLL_SOURCE" "$DLL_TARGET"
 
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
       - name: Build prebuild
         run: npm run prebuild -- --tag ${{ github.ref_name }} --upload-all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  #publish:
-  #  needs: build
-  #  runs-on: ubuntu-latest
-  #  if: startsWith(github.ref, 'refs/tags/')
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #    - name: Setup Node.js
-  #      uses: actions/setup-node@v4
-  #      with:
-  #        node-version: 20
-  #        registry-url: "https://registry.npmjs.org/"
-  #        always-auth: true
-
-  #    - name: Download all prebuilds
-  #      uses: actions/download-artifact@v4
-  #      with:
-  #        path: prebuilds
-
-  #    - name: Publish to npm
-  #      run: npm publish
-  #      env:
-  #        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
