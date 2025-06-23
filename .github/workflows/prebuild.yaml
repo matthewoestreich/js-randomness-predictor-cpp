@@ -47,6 +47,8 @@ jobs:
           DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Build prebuild
-        run: npm run prebuild -- --tag ${{ github.ref_name }} --upload-all
+        run: |
+          echo "${{ github.ref_name }}"
+          npm run prebuild -- --tag ${{ github.ref_name }} --upload-all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
