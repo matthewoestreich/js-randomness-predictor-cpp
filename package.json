@@ -14,6 +14,7 @@
       8
     ],
     "module_name": "js-randomness-predictor-cpp",
+		"module_path": "./prebuilds/{platform}-{arch}/",
     "host": "https://github.com/matthewoestreich/js-randomness-predictor-cpp/releases/download/"
   },
   "files": [
@@ -22,7 +23,9 @@
     "index.cjs",
     "index.mjs",
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+		"src/",
+		"third_party"
   ],
   "scripts": {
     "preinstall": "prebuild-install || echo \"Falling back to build from source\"",
