@@ -33,18 +33,12 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
       - name: Install dependencies
         run: npm install --ignore-scripts
-      - name: Get Prebuild Name
-        id: prebuild
-        shell: bash
-        run: |
-          PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
-          echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
       - name: Copy libz3.dll into prebuild folder (Windows only)
         if: matrix.os == 'windows-latest'
         shell: bash
         run: |
           DLL_SOURCE=third_party/z3/lib/win32-x64/libz3.dll
-          DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
+          DLL_TARGET=prebuilds/libz3.dll
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Build prebuild
         run: |
