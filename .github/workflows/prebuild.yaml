@@ -7,13 +7,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Cache CMake build directory
+      - name: Restore cached CMake tests/build/ directory
+        id: cache-tests-build
+        uses: actions/cache/restore@v4
+        with:
+          path: tests/build/
+          key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+      - name: Cache CMake tests/build/ directory
         uses: actions/cache@v4
         with:
           path: tests/build/
           key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
-            cmake-${{ runner.os }}-
+            cmake-${{ runner.os }}
       - name: Build and run tests
         run: npm test
   build:
