@@ -22,16 +22,23 @@ jobs:
         with:
           node-version: 24.2.0
           registry-url: "https://registry.npmjs.org/"
-      - name: Install dependencies
-        run: npm install --ignore-scripts
-      - name: Build prebuilds
-        run: npm run prebuildify
       - name: Get Prebuild Name
         id: prebuild
         shell: bash
         run: |
           PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+      - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
+        uses: actions/cache@v4
+        with:
+          path: build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ runner.os }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+          restore-keys: |
+            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ runner.os }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Build prebuilds
+        run: npm run prebuildify
       - name: Copy libz3.dll into prebuild folder (Windows only)
         if: matrix.os == 'windows-latest'
         shell: bash
