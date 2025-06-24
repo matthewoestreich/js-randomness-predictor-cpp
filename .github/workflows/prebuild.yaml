@@ -10,7 +10,7 @@ jobs:
       - name: Cache CMake build directory
         uses: actions/cache@v4
         with:
-          path: build/
+          path: tests/build/
           key: cmake-${{ runner.os }} # -${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
             cmake-${{ runner.os }}
