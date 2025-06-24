@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - '**'
-    tags:
-      - 'v*.*.*'
   pull_request:
     branches:
       - main
@@ -19,7 +17,6 @@ jobs:
           path: tests/build/
           key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
-            cmake-${{ runner.os }}
-          lookup-only: false
+            cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
       - name: Build and run tests
         run: npm test
