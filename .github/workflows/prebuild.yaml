@@ -13,6 +13,9 @@ jobs:
         with:
           path: tests/build/
           key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+          restore-keys: |
+            cmake-${{ runner.os }}
+          lookup-only: false
       - name: Cache CMake tests/build/ directory
         uses: actions/cache@v4
         with:
@@ -20,6 +23,7 @@ jobs:
           key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
             cmake-${{ runner.os }}
+          lookup-only: false
       - name: Build and run tests
         run: npm test
   build:
