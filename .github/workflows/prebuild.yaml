@@ -49,6 +49,6 @@ jobs:
       - name: Build prebuild
         run: |
           echo "${{ github.ref_name }}"
-          npm run prebuild -- --tag ${{ github.ref_name }} --upload-all
+          npm run prebuild -- --tag ${{ github.ref_name }} -u ${{ secrets.GITHUB_TOKEN }} --upload-all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
