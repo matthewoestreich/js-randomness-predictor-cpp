@@ -14,7 +14,7 @@ NodeVersion getCurrentNodeVersion(const Napi::Env &env) {
   std::string version = process.Get("version").As<Napi::String>().Utf8Value();
   std::regex versionRegex(R"(^v(\d+)\.(\d+)\.(\d+))");
   std::smatch match;
-  NodeVersion nodeVersion;
+  NodeVersion nodeVersion{};
   if (std::regex_search(version, match, versionRegex) && match.size() == 4) {
     nodeVersion.major = std::stoi(match[1].str());
     nodeVersion.minor = std::stoi(match[2].str());
