@@ -3,6 +3,14 @@ on:
     tags:
       - "v*.*.*"
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Run tests
+        run: npm test
   build:
     strategy:
       matrix:
