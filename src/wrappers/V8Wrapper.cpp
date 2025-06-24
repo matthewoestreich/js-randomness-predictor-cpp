@@ -94,7 +94,6 @@ V8Wrapper::V8Wrapper(const Napi::CallbackInfo &info)
 
   if (maybeSequence.IsArray()) {
     Napi::Array sequence = maybeSequence.As<Napi::Array>();
-    std::vector<double> _sequence;
 
     for (size_t i = 0; i < sequence.Length(); ++i) {
       Napi::MaybeOrValue<Napi::Value> val = sequence.Get(i);
