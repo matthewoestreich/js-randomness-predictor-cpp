@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     # Check if the workflow_run was successful and the commit message starts with "[publish]"
-    if: (github.event.workflow_run.conclusion == 'success') && (startsWith(github.event.workflow_run.head_commit.message, '[publish]'))
+    if: (github.event.workflow_run.conclusion == 'success') && (startsWith(github.event.workflow_run.head_commit.message, '[publish] '))
     # needs: build
     runs-on: ubuntu-latest
     steps:
