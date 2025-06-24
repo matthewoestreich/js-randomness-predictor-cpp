@@ -1,6 +1,6 @@
 {
   "name": "js-randomness-predictor-cpp",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "description": "Node.js native addon (C++) for high-performance Math.random() prediction",
   "main": "index.js",
   "types": "index.d.ts",
