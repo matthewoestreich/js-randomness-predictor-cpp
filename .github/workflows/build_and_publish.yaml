@@ -28,13 +28,10 @@ jobs:
         run: |
           PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
-      - name: Create 'build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}' cache folder
-        shell: bash
-        run: mkdir -p build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
       - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
         uses: actions/cache@v4
         with:
-          path: build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
           key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
