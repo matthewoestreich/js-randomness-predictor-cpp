@@ -1,6 +1,10 @@
 name: tests.yaml # try to keep name the same as current file name (tests.yaml in this case)
-on: 
+on:
   push:
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches:
       - main
