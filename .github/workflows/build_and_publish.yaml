@@ -1,7 +1,8 @@
-name: build.yaml # try to keep name the same as current file name (build.yaml in this case)
+name: build_and_publish.yaml # try to keep name the same as current file name (build.yaml in this case)
 on:
   workflow_run:
-    workflows: ["tests.yaml"] # Name of the first workflow
+    # Depends on these workflows
+    workflows: ["tests.yaml"]
     branches: [main]
     types:
       - completed
@@ -16,6 +17,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Automated Version Bump
+        uses: phips28/gh-action-bump-version@v11.0.7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -43,3 +48,22 @@ jobs:
         with:
           name: ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
           path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org/"
+          always-auth: true
+      - name: Download all prebuilds
+        uses: actions/download-artifact@v4
+        with:
+          path: prebuilds
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
