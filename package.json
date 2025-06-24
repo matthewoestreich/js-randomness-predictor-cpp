@@ -32,9 +32,9 @@
     "build": "node-gyp build",
     "build:bear": "bear --output build/compile_commands.json -- node-gyp configure build",
     "clean": "node-gyp clean",
-    "publish:main:major": "git commit --allow-empty -m \"[publish] #major\" && git push origin main",
-    "publish:main:minor": "git commit --allow-empty -m \"[publish] #minor\" && git push origin main",
-    "publish:main:patch": "git commit --allow-empty -m \"[publish] #patch\" && git push origin main",
+    "publish:main:major": "git add . && git commit --allow-empty -m \"[publish] #major\" && git push origin main",
+    "publish:main:minor": "git add . && git commit --allow-empty -m \"[publish] #minor\" && git push origin main",
+    "publish:main:patch": "git add . && git commit --allow-empty -m \"[publish] #patch\" && git push origin main",
     "format": "node scripts/clang-format.mjs",
     "test": "node scripts/build-and-run-tests.mjs"
   },
