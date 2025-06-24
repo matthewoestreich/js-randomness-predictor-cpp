@@ -9,7 +9,6 @@
   Gets current Node.js version.
 */
 NodeVersion getCurrentNodeVersion(const Napi::Env &env) {
-  // For finding the current node version
   Napi::Object process = env.Global().Get("process").As<Napi::Object>();
   std::string version = process.Get("version").As<Napi::String>().Utf8Value();
   std::regex versionRegex(R"(^v(\d+)\.(\d+)\.(\d+))");
