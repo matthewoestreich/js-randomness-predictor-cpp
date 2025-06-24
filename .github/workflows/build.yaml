@@ -7,8 +7,8 @@ on:
       - completed
 jobs:
   build:
-    # Check if the commit message starts with "[publish]"
-    if: startsWith(github.event.workflow_run.head_commit.message, '[publish]') 
+    # Check if the workflow_run was successful and the commit message starts with "[publish]"
+    if: (github.event.workflow_run.conclusion == 'success') && (startsWith(github.event.workflow_run.head_commit.message, '[publish]'))
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
