@@ -1,6 +1,6 @@
 {
   "name": "js-randomness-predictor-cpp",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Node.js native addon (C++) for high-performance Math.random() prediction",
   "main": "index.js",
   "types": "index.d.ts",
@@ -10,7 +10,9 @@
     "types": "./index.d.ts"
   },
   "binary": {
-		"napi_versions": [8],
+    "napi_versions": [
+      8
+    ],
     "module_name": "js-randomness-predictor-cpp",
     "host": "https://github.com/matthewoestreich/js-randomness-predictor-cpp/releases/download/"
   },
