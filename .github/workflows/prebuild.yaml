@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm install --ignore-scripts
-      - name: Run tests
+      - name: Cache CMake build directory
+        uses: actions/cache@v4
+        with:
+          path: build/
+          key: cmake-${{ runner.os }} # -${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+          restore-keys: |
+            cmake-${{ runner.os }}
+      - name: Build and run tests
         run: npm test
   build:
+    needs: test
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
@@ -19,19 +25,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24.2.0
           registry-url: "https://registry.npmjs.org/"
-
       - name: Install dependencies
         run: npm install --ignore-scripts
-
       - name: Build prebuilds
         run: npm run prebuildify
-
       - name: Get Prebuild Name
         id: prebuild
         shell: bash
@@ -43,7 +45,6 @@ jobs:
         with:
           name: ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
           path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
-
   publish:
     needs: build
     runs-on: ubuntu-latest
@@ -56,12 +57,10 @@ jobs:
           node-version: 20
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
-
       - name: Download all prebuilds
         uses: actions/download-artifact@v4
         with:
           path: prebuilds
-
       - name: Publish to npm
         run: npm publish
         env:
