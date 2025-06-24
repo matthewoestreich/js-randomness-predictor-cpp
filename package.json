@@ -1,6 +1,6 @@
 {
   "name": "js-randomness-predictor-cpp",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Node.js native addon (C++) for high-performance Math.random() prediction",
   "main": "index.js",
   "types": "index.d.ts",
@@ -25,7 +25,7 @@
     "index.d.ts"
   ],
   "scripts": {
-		"prebuildify": "prebuildify --napi",
+    "prebuildify": "prebuildify --napi",
     "configure": "node-gyp configure",
     "configure:verbose": "node-gyp configure --verbose",
     "build": "node-gyp build",
