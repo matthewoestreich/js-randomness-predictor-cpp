@@ -28,13 +28,16 @@ jobs:
         run: |
           PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+      - name: Create 'build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}' cache folder
+        shell: bash
+        run: mkdir build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
       - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
         uses: actions/cache@v4
         with:
           path: build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
-          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ runner.os }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
           restore-keys: |
-            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ runner.os }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
       - name: Install dependencies
         run: npm install --ignore-scripts
       - name: Build prebuilds
