@@ -42,6 +42,7 @@ jobs:
           DLL_TARGET=prebuilds/libz3.dll
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Build and upload prebuild
+        shell: bash
         run: |
           npm run prebuild -- -u ${{ secrets.GITHUB_TOKEN }}
         env:
