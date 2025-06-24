@@ -30,7 +30,7 @@ jobs:
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
       - name: Create 'build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}' cache folder
         shell: bash
-        run: mkdir build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+        run: mkdir -p build/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
       - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
         uses: actions/cache@v4
         with:
