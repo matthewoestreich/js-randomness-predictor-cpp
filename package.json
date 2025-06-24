@@ -32,9 +32,9 @@
     "build": "node-gyp build",
     "build:bear": "bear --output build/compile_commands.json -- node-gyp configure build",
     "clean": "node-gyp clean",
-    "publish:main:major": "npm version major && git push origin main --tags",
-    "publish:main:minor": "npm version minor && git push origin main --tags",
-    "publish:main:patch": "npm version patch && git push origin main --tags",
+    "publish:main:major": "git commit -m \"[publish] #major\" && git push origin main",
+    "publish:main:minor": "git commit -m \"[publish] #minor\" && git push origin main",
+    "publish:main:patch": "git commit -m \"[publish] #patch\" && git push origin main",
     "format": "node scripts/clang-format.mjs",
     "test": "node scripts/build-and-run-tests.mjs"
   },
