@@ -43,7 +43,7 @@ jobs:
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Build prebuild
         run: |
-          npm run prebuild
+          npm run prebuild -- -u ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload prebuilds
