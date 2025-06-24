@@ -26,7 +26,8 @@
   ],
   "scripts": {
     "preinstall": "prebuild-install || echo \"Falling back to build from source\"",
-    "prebuild": "prebuild --backend node-gyp --verbose && prebuild --verbose --backend node-gyp",
+    "prebuild": "prebuild --backend node-gyp --verbose",
+		"prebuild:upload": "prebuild --verbose --backend node-gyp --upload-all",
     "configure": "node-gyp configure",
     "configure:verbose": "node-gyp configure --verbose",
     "build": "node-gyp build",
