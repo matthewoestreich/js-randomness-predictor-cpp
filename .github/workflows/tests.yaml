@@ -7,10 +7,7 @@ on:
     branches:
       - main
 jobs:
-  build:
-    uses: ./.github/workflows/build.yaml
   test_js:
-    needs: build
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
@@ -34,8 +31,17 @@ jobs:
           key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+      - name: Build if no cache
+        if: steps.cache-build.outputs.cache-hit == 'false'
+        run: npm run prebuildify
+      - name: Copy libz3.dll into prebuild folder (Windows only)
+        if: (steps.cache-build.outputs.cache-hit == 'false') && (matrix.os == 'windows-latest')
+        shell: bash
+        run: |
+          DLL_SOURCE=third_party/z3/lib/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
+          DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
+          cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Run JS tests
-        if: steps.cache-build.outputs.cache-hit == 'true'
         run: npm run test:js
   test_cpp:
     runs-on: ubuntu-latest
