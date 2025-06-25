@@ -55,9 +55,7 @@ jobs:
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Run JS tests
         shell: bash
-        run: echo $(node -v) && npm run test:js
-        env:
-          FORCE_COLOR: "1"
+        run: npm run test:js
   test-underlying-cpp:
     runs-on: ubuntu-latest
     steps:
