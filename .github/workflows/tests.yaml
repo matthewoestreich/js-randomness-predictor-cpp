@@ -36,10 +36,10 @@ jobs:
           key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ steps.cache-key.outputs.hash }}
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ steps.cache-key.outputs.hash }}
-      - name: Set up Node.js (if no cache)
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.2.0
       - name: Install dependencies (if no cache)
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: npm install --ignore-scripts
