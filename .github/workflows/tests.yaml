@@ -11,7 +11,11 @@ jobs:
     uses: ./.github/workflows/build.yaml
   test_js:
     needs: build
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
+        architecture: [x64]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
