@@ -36,7 +36,8 @@ jobs:
           key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
-      - name: Install dependencies
+      - name: Install dependencies (if no cache)
+        if: steps.cache-build.outputs.cache-hit == 'false'
         run: npm install --ignore-scripts
       - name: Build prebuilds (if no cache)
         if: steps.cache-build.outputs.cache-hit == 'false'

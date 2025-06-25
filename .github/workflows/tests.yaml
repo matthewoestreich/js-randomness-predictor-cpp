@@ -2,12 +2,12 @@ name: tests.yaml # try to keep name the same as current file name (tests.yaml in
 on:
   push:
     branches:
-      - '**'
+      - "**"
   pull_request:
     branches:
       - main
 jobs:
-  test_js:
+  test-js:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
@@ -15,9 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm install --ignore-scripts
-      - name: Get Prebuild Name
+      - name: Description of job
+        shell: bash
+        run: echo "Transitively tests the native C++ wrapper code by way of testing built .node files in JS for each platform we support."
+      - name: Get {platform}-{arch} Name
         id: prebuild
         shell: bash
         run: |
@@ -31,10 +32,12 @@ jobs:
           key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
-      - name: Build if no cache
+      - name: Install dependencies (if no cache)
+        run: npm install --ignore-scripts
+      - name: Build (if no cache)
         if: steps.cache-build.outputs.cache-hit == 'false'
         run: npm run prebuildify
-      - name: Copy libz3.dll into prebuild folder (Windows only)
+      - name: Copy libz3.dll into prebuild folder (Windows only) (if no cache)
         if: (steps.cache-build.outputs.cache-hit == 'false') && (matrix.os == 'windows-latest')
         shell: bash
         run: |
@@ -43,7 +46,7 @@ jobs:
           cp "$DLL_SOURCE" "$DLL_TARGET"
       - name: Run JS tests
         run: npm run test:js
-  test_cpp:
+  test-underlying-cpp:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
