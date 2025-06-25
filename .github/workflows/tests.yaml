@@ -34,7 +34,7 @@ jobs:
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
       - name: Echo cache hit status
         shell: bash
-        run: echo ${{ steps.cache-build.outputs.cache-hit }}
+        run: echo "${{ steps.cache-build.outputs.cache-hit }}"
       - name: Install dependencies (if no cache)
         if: steps.cache-build.outputs.cache-hit == 'false'
         run: npm install --ignore-scripts
