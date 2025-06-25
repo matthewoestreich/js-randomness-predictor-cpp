@@ -9,6 +9,10 @@ declare module "js-randomness-predictor-cpp" {
     predictNext(): number;
     get sequence(): number[];
     get nodeVersion(): NodeJsVersion;
+    // Only use this if you know what you're doing! This allows you to change
+    // the predictor so it is able to predict usingg sequences generated in 
+    // different versions of Node.js.
+    set nodeVersion(version: NodeJsVersion);
   }
 
   interface ChromePredictor {

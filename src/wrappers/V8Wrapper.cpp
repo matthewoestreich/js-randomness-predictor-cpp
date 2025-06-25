@@ -47,7 +47,7 @@ Napi::Object V8Wrapper::Init(Napi::Env env, Napi::Object exports) {
       {
           V8Wrapper::InstanceMethod("predictNext", &V8Wrapper::predictNext),
           V8Wrapper::InstanceAccessor("sequence", &V8Wrapper::getSequence, nullptr),
-          V8Wrapper::InstanceAccessor("nodeVersion", &V8Wrapper::getNodeVersion, nullptr),
+          V8Wrapper::InstanceAccessor<&V8Wrapper::getNodeVersion, &V8Wrapper::setNodeVersion>("nodeVersion"),
       }
   );
 
@@ -150,4 +150,26 @@ Napi::Value V8Wrapper::getNodeVersion(const Napi::CallbackInfo &info) {
   obj.Set("patch", Napi::Number::New(env, nv.patch));
 
   return obj;
+}
+
+/*
+  Set Node.js version. This allows you to change the predictor so it is able to predict
+  from sequences generated in different versions of Node.js.
+*/
+void V8Wrapper::setNodeVersion(const Napi::CallbackInfo &info, const Napi::Value &value) {
+  Napi::Env env = info.Env();
+
+  if (!value.IsObject()) {
+    Napi::TypeError::New(env, "Expected an object with { major, minor, patch }").ThrowAsJavaScriptException();
+    return;
+  }
+
+  Napi::Object input = value.As<Napi::Object>();
+
+  NodeVersion version;
+  version.major = input.Get("major").As<Napi::Number>().Int32Value();
+  version.minor = input.Get("minor").As<Napi::Number>().Int32Value();
+  version.patch = input.Get("patch").As<Napi::Number>().Int32Value();
+
+  V8PredictorInstance->setNodeVersion(version);
 }

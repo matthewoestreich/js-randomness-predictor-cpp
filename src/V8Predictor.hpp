@@ -18,6 +18,8 @@ public:
   V8Predictor(const NodeVersion &version, const std::vector<double> &sequence);
   const std::vector<double> &getSequence() const;
   const NodeVersion &getNodeVersion() const;
+  // Only use this if you know what you're doing!
+  void setNodeVersion(const NodeVersion &v);
   double predictNext();
 
 private:

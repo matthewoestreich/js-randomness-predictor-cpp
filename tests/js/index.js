@@ -18,6 +18,30 @@ describe("V8", () => {
     const V8_EXPECTED = Array.from({ length: 10 }, Math.random);
     assert.deepStrictEqual(V8_EXPECTED, V8_PREDICTIONS);
   });
+  describe("V8 : Node.js v22.0.0", () => {
+    it("should predict the next random numbers", () => {
+      const sequence_v22_0_0 = [0.36280726230126614, 0.32726837947512855, 0.22834780314989023, 0.18295517908119385];
+      const expected_v22_0_0 = [
+        0.8853110028441145, 0.14326940888839124, 0.035607792006009165, 0.6491231376351401, 0.3345277284146617, 0.42618019812863417,
+      ];
+      const v8 = JSRandomnessPredictor.v8(sequence_v22_0_0);
+      v8.nodeVersion = { major: 22, minor: 0, patch: 0 };
+      const predictions = Array.from({ length: expected_v22_0_0.length }, () => v8.predictNext());
+      assert.deepStrictEqual(predictions, expected_v22_0_0);
+    });
+  });
+  describe("V8 : Node.js v24.2.0", () => {
+    it("should predict the next random numbers", () => {
+      const sequence_v24_2_0 = [0.01800425609760259, 0.19267361208155598, 0.9892770985784053, 0.49553307275603264, 0.7362624704291061];
+      const expected_v24_2_0 = [
+        0.8664993194151147, 0.5549329443482626, 0.8879559862322086, 0.9570142746667122, 0.7514661363382521, 0.9348208735728415,
+      ];
+      const v8 = JSRandomnessPredictor.v8(sequence_v24_2_0);
+      v8.nodeVersion = { major: 24, minor: 2, patch: 0 };
+      const predictions = Array.from({ length: expected_v24_2_0.length }, () => v8.predictNext());
+      assert.deepStrictEqual(predictions, expected_v24_2_0);
+    });
+  });
 });
 
 describe("Firefox", () => {

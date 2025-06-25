@@ -41,6 +41,10 @@ const NodeVersion &V8Predictor::getNodeVersion() const {
   return this->nodeVersion;
 }
 
+void V8Predictor::setNodeVersion(const NodeVersion &v) {
+  this->nodeVersion = v;
+}
+
 double V8Predictor::predictNext() {
   return toDouble(xorShift128PlusConcrete());
 }
