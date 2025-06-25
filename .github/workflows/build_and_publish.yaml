@@ -38,11 +38,11 @@ jobs:
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
       - name: Install dependencies
         run: npm install --ignore-scripts
-      - name: Build prebuilds
-        if: steps.cache-build.outputs.cache-hit != 'true'
+      - name: Build prebuilds (if no cache)
+        if: steps.cache-build.outputs.cache-hit == 'false'
         run: npm run prebuildify
-      - name: Copy libz3.dll into prebuild folder (Windows only)
-        if: matrix.os == 'windows-latest'
+      - name: Copy libz3.dll into prebuild folder (Windows only) (if no cache)
+        if: (steps.cache-build.outputs.cache-hit == 'false') && (matrix.os == 'windows-latest')
         shell: bash
         run: |
           DLL_SOURCE=third_party/z3/lib/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
