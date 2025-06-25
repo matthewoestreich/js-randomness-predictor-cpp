@@ -9,11 +9,11 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build.yaml
-  post-build-step:
+  test_js:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: node tests/js/index.js
+      - run: npm run test:js
   test_cpp:
     runs-on: ubuntu-latest
     steps:

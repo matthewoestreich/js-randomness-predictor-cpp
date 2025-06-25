@@ -22,6 +22,7 @@ jobs:
           PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
       - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
+        id: cache-build
         uses: actions/cache@v4
         with:
           path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
@@ -31,6 +32,7 @@ jobs:
       - name: Install dependencies
         run: npm install --ignore-scripts
       - name: Build prebuilds
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: npm run prebuildify
       - name: Copy libz3.dll into prebuild folder (Windows only)
         if: matrix.os == 'windows-latest'
