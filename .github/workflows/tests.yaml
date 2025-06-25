@@ -1,4 +1,4 @@
-name: tests.yaml # try to keep name the same as current file name (tests.yaml in this case)
+name: tests.yaml
 on:
   push:
     branches:
@@ -18,7 +18,7 @@ jobs:
       - name: Description of job
         shell: bash
         run: echo "Transitively tests the native C++ wrapper code by way of testing built .node files in JS for each platform we support."
-      - name: Get {platform}-{arch} Name
+      - name: Get {platform}-{arch} name
         id: prebuild
         shell: bash
         run: |
@@ -33,6 +33,7 @@ jobs:
           restore-keys: |
             build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
       - name: Install dependencies (if no cache)
+        if: steps.cache-build.outputs.cache-hit == 'false'
         run: npm install --ignore-scripts
       - name: Build (if no cache)
         if: steps.cache-build.outputs.cache-hit == 'false'
@@ -50,12 +51,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Job description
+        shell: bash
+        run: echo "Tests the underlying C++ predictors. Meaning, the underlying code that our wrappers wrap, so we can expose underlying to Node."
       - name: Cache CMake tests/build/ directory
         uses: actions/cache@v4
         with:
           path: tests/build/
-          key: cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+          key: test-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
-            cmake-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+            test-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
       - name: Build and run tests
         run: npm test

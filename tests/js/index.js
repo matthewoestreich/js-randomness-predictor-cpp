@@ -1,3 +1,11 @@
+/**
+ *
+ * This code transitively tests the native C++ wrappers by importing the built .node addon files and using the code within them.
+ *
+ * This code is designed to be called from GitHub Actions - ideally, a matrix job - so we can test on all platforms.
+ *
+ */
+
 const os = require("os");
 const prebuildsFolder = `${os.platform()}-${os.arch()}`;
 const JSRandomnessPredictor = require(`../../prebuilds/${prebuildsFolder}/js-randomness-predictor-cpp.node`);

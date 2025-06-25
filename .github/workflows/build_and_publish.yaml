@@ -1,4 +1,4 @@
-name: build_and_publish.yaml # try to keep name the same as current file name (build.yaml in this case)
+name: build_and_publish.yaml
 on:
   workflow_run:
     # Depends on these workflows
@@ -8,8 +8,8 @@ on:
       - completed
 jobs:
   build:
-    # Check if the workflow_run was successful and the commit message starts with "[publish]"
-    if: (github.event.workflow_run.conclusion == 'success') && (startsWith(github.event.workflow_run.head_commit.message, '[publish] '))
+    # Check if the workflow_run was successful and the commit message starts with "[publish] "
+    if: (github.event.workflow_run.conclusion == 'success') && (startsWith(github.event.workflow_run.head_commit.message, '[publish] ')) # intentional space at end of '[publish] '
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 24.2.0
           registry-url: "https://registry.npmjs.org/"
-      - name: Get Prebuild Name
+      - name: Get {platform}-{arch} name
         id: prebuild
         shell: bash
         run: |
