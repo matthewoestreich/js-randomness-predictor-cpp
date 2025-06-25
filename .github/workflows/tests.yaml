@@ -16,7 +16,22 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: npm install --ignore-scripts
+      - name: Get Prebuild Name
+        id: prebuild
+        shell: bash
+        run: |
+          PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
+          echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+      - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
+        id: cache-build
+        uses: actions/cache@v4
+        with:
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+          restore-keys: |
+            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
       - name: Run JS tests
+        if: steps.cache-build.outputs.cache-hit == 'true'
         run: npm run test:js
   test_cpp:
     runs-on: ubuntu-latest
