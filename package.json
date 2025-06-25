@@ -38,7 +38,7 @@
     "format:cpp": "node scripts/clang-format.mjs",
     "format:js": "prettier \"**/*.{js,cjs,mjs}\" --write",
     "format": "npm run format:cpp && npm run format:js",
-    "test:js": "node tests/js/index.js",
+    "test:js": "node --test tests/js/index.js",
     "test": "node scripts/build-and-run-tests.mjs"
   },
   "keywords": [

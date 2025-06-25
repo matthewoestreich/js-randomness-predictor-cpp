@@ -80,34 +80,39 @@ V8Wrapper::V8Wrapper(const Napi::CallbackInfo &info)
   Napi::Env env = info.Env();
   Napi::Value maybeSequence = info[0];
 
-  std::vector<double> _sequence;
-
-  if (info.Length() == 0 || maybeSequence.IsUndefined()) {
-    for (size_t i = 0; i < 4; ++i) {
-      _sequence.push_back(MathRandom(env));
-    }
-
-    V8PredictorInstance = std::make_unique<V8Predictor>(getCurrentNodeVersion(env), std::move(_sequence));
+  // If we were given more than one param.
+  if (info.Length() > 1) {
+    Napi::Error::New(env, "Expected single parameter of type number[]").ThrowAsJavaScriptException();
+    return;
+  }
+  // If we were given a param but it isn't an array.
+  if (info.Length() > 0 && !maybeSequence.IsUndefined() && !maybeSequence.IsArray()) {
+    Napi::TypeError::New(env, "Expected number[]").ThrowAsJavaScriptException();
     return;
   }
 
-  if (maybeSequence.IsArray()) {
-    Napi::Array sequence = maybeSequence.As<Napi::Array>();
+  std::vector<double> _sequence;
 
-    for (size_t i = 0; i < sequence.Length(); ++i) {
-      Napi::MaybeOrValue<Napi::Value> val = sequence.Get(i);
-      if (val.IsUndefined() || val.IsNull() || !val.IsNumber()) {
+  // If no param, fall back to Math.random.
+  if (info.Length() == 0) {
+    for (size_t i = 0; i < 4; ++i) {
+      _sequence.push_back(MathRandom(env));
+    }
+  } else {
+    // Otherwise construct from provided array.
+    Napi::Array maybeSequenceArray = maybeSequence.As<Napi::Array>();
+
+    for (size_t i = 0; i < maybeSequenceArray.Length(); ++i) {
+      Napi::Value val = maybeSequenceArray.Get(i);
+      if (!val.IsNumber()) {
         Napi::TypeError::New(env, "Expected number").ThrowAsJavaScriptException();
         return;
       }
       _sequence.push_back(val.As<Napi::Number>().DoubleValue());
     }
-
-    V8PredictorInstance = std::make_unique<V8Predictor>(getCurrentNodeVersion(env), std::move(_sequence));
-    return;
   }
 
-  Napi::TypeError::New(env, "Expected number[]").ThrowAsJavaScriptException();
+  V8PredictorInstance = std::make_unique<V8Predictor>(getCurrentNodeVersion(env), std::move(_sequence));
 }
 
 /*
