@@ -28,7 +28,7 @@ const FIREFOX_PREDICTIONS = Array.from({ length: FIREFOX_EXPECTED.length }, () =
 if (!V8_PREDICTIONS.every((v, i) => v === Math.random())) {
   throw new Error(`V8 FAILED!`);
 } else {
-  console.log("V8 SUCCESS!")
+  console.log("V8 SUCCESS!");
 }
 if (!CHROME_EXPECTED.every((v, i) => v === CHROME_PREDICTIONS[i])) {
   throw new Error(`CHROME FAILED!`);
