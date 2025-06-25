@@ -24,14 +24,17 @@ jobs:
         run: |
           PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
           echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+      - name: Compute cache key
+        id: cache-key
+        run: echo "hash=${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}" >> $GITHUB_OUTPUT
       - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
         id: cache-build
         uses: actions/cache@v4
         with:
           path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
-          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ steps.cache-key.outputs.hash }}
           restore-keys: |
-            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ steps.cache-key.outputs.hash }}
       - name: Install dependencies (if no cache)
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: npm install --ignore-scripts

@@ -9,9 +9,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert");
 const os = require("os");
-
-const prebuildsFolder = `${os.platform()}-${os.arch()}`;
-const JSRandomnessPredictor = require(`../../prebuilds/${prebuildsFolder}/js-randomness-predictor-cpp.node`);
+const JSRandomnessPredictor = require(`../../prebuilds/${os.platform()}-${os.arch()}/js-randomness-predictor-cpp.node`);
 
 describe("V8", () => {
   it("should generate a random sequence and predict the next numbers", () => {
