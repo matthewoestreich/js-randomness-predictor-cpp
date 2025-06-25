@@ -1,0 +1,46 @@
+on:
+  workflow_call:
+name: build.yaml # try to keep name the same as current file name (build.yaml in this case)
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
+        architecture: [x64]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.2.0
+          registry-url: "https://registry.npmjs.org/"
+      - name: Get Prebuild Name
+        id: prebuild
+        shell: bash
+        run: |
+          PREBUILD_FOLDER_NAME=$(node -p "require('os').platform() + '-' + require('os').arch()")
+          echo "PREBUILD_FOLDER_NAME=$PREBUILD_FOLDER_NAME" >> $GITHUB_OUTPUT
+      - name: Cache ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }} build
+        uses: actions/cache@v4
+        with:
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          key: build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+          restore-keys: |
+            build-${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}-${{ hashFiles('src/**/*.cpp', 'src/**/*.hpp', 'third_party/**/*.*') }}
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Build prebuilds
+        run: npm run prebuildify
+      - name: Copy libz3.dll into prebuild folder (Windows only)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          DLL_SOURCE=third_party/z3/lib/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
+          DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
+          cp "$DLL_SOURCE" "$DLL_TARGET"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}

@@ -7,7 +7,14 @@ on:
     branches:
       - main
 jobs:
-  test:
+  build:
+    uses: ./.github/workflows/build.yaml
+  post-build-step:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: node tests/js/index.js
+  test_cpp:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

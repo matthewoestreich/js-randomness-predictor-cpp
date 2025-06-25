@@ -35,5 +35,6 @@
 .cache/
 node_modules/
 build/
+prebuilds/
 .DS_Store
 !third_party/z3/lib/**/*.*

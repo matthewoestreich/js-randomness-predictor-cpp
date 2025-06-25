@@ -35,7 +35,9 @@
     "publish:main:major": "git add . && git commit --allow-empty -m \"[publish] #major\" && git push origin main",
     "publish:main:minor": "git add . && git commit --allow-empty -m \"[publish] #minor\" && git push origin main",
     "publish:main:patch": "git add . && git commit --allow-empty -m \"[publish] #patch\" && git push origin main",
-    "format": "node scripts/clang-format.mjs",
+    "format:cpp": "node scripts/clang-format.mjs",
+    "format:js": "prettier \"**/*.{js,cjs,mjs}\" --write",
+    "format": "npm run format:cpp && npm run format:js",
     "test": "node scripts/build-and-run-tests.mjs"
   },
   "keywords": [
