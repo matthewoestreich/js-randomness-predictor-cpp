@@ -18,6 +18,14 @@ describe("V8", () => {
     const V8_EXPECTED = Array.from({ length: 10 }, Math.random);
     assert.deepStrictEqual(V8_EXPECTED, V8_PREDICTIONS);
   });
+  it("should change the nodeVersion", () => {
+    const v8 = JSRandomnessPredictor.v8();
+    const oldVersion = v8.nodeVersion;
+    const newVersion = { major: 69, minor: 69, patch: 69 };
+    v8.nodeVersion = newVersion;
+    assert.notStrictEqual(JSON.stringify(oldVersion), JSON.stringify(v8.nodeVersion));
+    assert.strictEqual(JSON.stringify(newVersion), JSON.stringify(v8.nodeVersion));
+  });
   describe("V8 : Node.js v22.0.0", () => {
     it("should predict the next random numbers", () => {
       const sequence_v22_0_0 = [0.36280726230126614, 0.32726837947512855, 0.22834780314989023, 0.18295517908119385];

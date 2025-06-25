@@ -13,6 +13,15 @@ V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &
       sState0(context.bv_const("se_state0", 64)),
       sState1(context.bv_const("se_state1", 64)) {
   reverse(this->internalSequence.begin(), this->internalSequence.end());
+}
+
+// Essentially solves symbolic state.
+// This is not in the constructor because the user may want to change the nodeVersion
+// before running predictions.
+bool V8Predictor::initialize() {
+  if (this->isInitialized) {
+    return true;
+  }
 
   for (double observed : this->internalSequence) {
     xorShift128PlusSymbolic();
@@ -31,6 +40,9 @@ V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &
   for (size_t i = 0; i < this->internalSequence.size(); ++i) {
     xorShift128PlusConcrete();
   }
+
+  this->isInitialized = true;
+  return true;
 }
 
 const std::vector<double> &V8Predictor::getSequence() const {
@@ -46,6 +58,7 @@ void V8Predictor::setNodeVersion(const NodeVersion &v) {
 }
 
 double V8Predictor::predictNext() {
+  this->initialize();
   return toDouble(xorShift128PlusConcrete());
 }
 

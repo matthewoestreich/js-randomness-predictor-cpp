@@ -26,6 +26,7 @@ private:
   std::vector<double> sequence;
   NodeVersion nodeVersion;
   std::vector<double> internalSequence;
+  bool isInitialized = false;
   uint64_t cState0;
   uint64_t cState1;
   z3::context context;
@@ -34,6 +35,7 @@ private:
   z3::expr sState1;
 
   void xorShift128PlusSymbolic();
+  bool initialize();
   void recoverMantissaAndAddToSolver(double value);
   uint64_t xorShift128PlusConcrete();
   double toDouble(uint64_t value);
