@@ -15,9 +15,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Description of job
-        shell: bash
-        run: echo "Transitively tests the native C++ wrapper code by way of testing built .node files in JS for each platform we support."
       - name: Get {platform}-{arch} name
         id: prebuild
         shell: bash
@@ -53,6 +50,12 @@ jobs:
           DLL_SOURCE=third_party/z3/lib/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
           DLL_TARGET=prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}/libz3.dll
           cp "$DLL_SOURCE" "$DLL_TARGET"
+      - name: Upload artifact (if [publish] run)
+        if: startsWith(github.event.head_commit.message, '[publish] ')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
+          path: prebuilds/${{ steps.prebuild.outputs['PREBUILD_FOLDER_NAME'] }}
       - name: Run JS tests
         shell: bash
         run: npm run test:js
@@ -62,9 +65,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Job description
-        shell: bash
-        run: echo "Tests the underlying C++ predictors. Meaning, the underlying code that our wrappers wrap, so we can expose underlying to Node."
       - name: Cache CMake tests/build/ directory
         uses: actions/cache@v4
         with:
@@ -74,3 +74,31 @@ jobs:
             test-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
       - name: Build and run tests
         run: npm test
+  publish:
+    if: startsWith(github.event.head_commit.message, '[publish] ')
+    needs: [test-js, test-underlying-cpp]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org/"
+      - name: Download all prebuilds
+        uses: actions/download-artifact@v4
+        with:
+          path: prebuilds
+      - name: Automated Version Bump
+        uses: phips28/gh-action-bump-version@v11.0.7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          major-wording: "#major"
+          minor-wording: "#minor"
+          patch-wording: "#patch"
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
