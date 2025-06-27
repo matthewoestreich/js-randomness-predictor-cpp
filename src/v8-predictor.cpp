@@ -1,10 +1,11 @@
+#include "v8-predictor.hpp"
+
 #include <bit>
 #include <cstdint>
 #include <sstream>
 
-#include "V8Predictor.hpp"
-
-V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &sequence)
+V8Predictor::V8Predictor(const NodeVersion &version,
+                         const std::vector<double> &sequence)
     : sequence(sequence),
       nodeVersion(version),
       internalSequence(sequence),
@@ -16,8 +17,8 @@ V8Predictor::V8Predictor(const NodeVersion &version, const std::vector<double> &
 }
 
 // Essentially solves symbolic state.
-// This is not in the constructor because the user may want to change the nodeVersion
-// before running predictions.
+// This is not in the constructor because the user may want to change the
+// nodeVersion before running predictions.
 bool V8Predictor::initialize() {
   if (this->isInitialized) {
     return true;
@@ -90,7 +91,8 @@ uint64_t V8Predictor::xorShift128PlusConcrete() {
 
 void V8Predictor::recoverMantissaAndAddToSolver(double value) {
   if (nodeVersion.major >= 24) {
-    uint64_t mantissa = static_cast<uint64_t>(value * static_cast<double>(1ULL << 53));
+    uint64_t mantissa =
+        static_cast<uint64_t>(value * static_cast<double>(1ULL << 53));
     solver.add(lshr(sState0, 11) == context.bv_val(mantissa, 64));
     return;
   }
@@ -100,8 +102,10 @@ void V8Predictor::recoverMantissaAndAddToSolver(double value) {
     return;
   }
   std::stringstream ss;
-  ss << "[V8Predictor] Error recovering mantissa! Unrecognized Node.js Version : v" << nodeVersion.major << "."
-     << nodeVersion.minor << "." << nodeVersion.patch;
+  ss << "[V8Predictor] Error recovering mantissa! Unrecognized Node.js Version "
+        ": v"
+     << nodeVersion.major << "." << nodeVersion.minor << "."
+     << nodeVersion.patch;
   throw std::runtime_error(ss.str());
 }
 
@@ -113,7 +117,9 @@ double V8Predictor::toDouble(uint64_t value) {
     return std::bit_cast<double>((value >> 12) | 0x3FF0000000000000) - 1;
   }
   std::stringstream ss;
-  ss << "[V8Predictor] Error converting to double! Unrecognized Node.js Version : v" << nodeVersion.major << "."
-     << nodeVersion.minor << "." << nodeVersion.patch;
+  ss << "[V8Predictor] Error converting to double! Unrecognized Node.js "
+        "Version : v"
+     << nodeVersion.major << "." << nodeVersion.minor << "."
+     << nodeVersion.patch;
   throw std::runtime_error(ss.str());
 }

@@ -1,40 +1,34 @@
-#include <cstddef>
+#include "chrome-wrapper.hpp"
+
 #include <napi.h>
 
-#include "ChromePredictor.hpp"
-#include "ChromeWrapper.hpp"
+#include <cstddef>
 
 /*
   Initialize our ChromeWrapper.
 */
 Napi::Object ChromeWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = ChromeWrapper::DefineClass(
-      env,
-      "chrome",
+      env, "chrome",
       {
-          ChromeWrapper::InstanceMethod("predictNext", &ChromeWrapper::predictNext),
-          ChromeWrapper::InstanceAccessor("sequence", &ChromeWrapper::getSequence, nullptr),
-      }
-  );
+          ChromeWrapper::InstanceMethod("predictNext",
+                                        &ChromeWrapper::predictNext),
+          ChromeWrapper::InstanceAccessor("sequence",
+                                          &ChromeWrapper::getSequence, nullptr),
+      });
 
   constructor = Napi::Persistent(func);
   constructor.SuppressDestruct();
 
-  exports.Set(
-      "chrome",
-      Napi::Function::New(
-          env,
-          [](const Napi::CallbackInfo &info) {
-            std::vector<napi_value> args(info.Length());
-            for (size_t i = 0; i < info.Length(); ++i) {
-              args[i] = info[i];
-            }
-            return constructor.New(args);
-          },
-          "chrome"
-      )
-  );
+  auto callCtor = [](const Napi::CallbackInfo &info) {
+    std::vector<napi_value> args(info.Length());
+    for (size_t i = 0; i < info.Length(); ++i) {
+      args[i] = info[i];
+    }
+    return constructor.New(args);
+  };
 
+  exports.Set("chrome", Napi::Function::New(env, callCtor, "chrome"));
   return exports;
 }
 
@@ -68,7 +62,8 @@ ChromeWrapper::ChromeWrapper(const Napi::CallbackInfo &info)
     _sequence.push_back(val.As<Napi::Number>().DoubleValue());
   }
 
-  ChromePredictorInstance = std::make_unique<ChromePredictor>(std::move(_sequence));
+  ChromePredictorInstance =
+      std::make_unique<ChromePredictor>(std::move(_sequence));
 }
 
 /*

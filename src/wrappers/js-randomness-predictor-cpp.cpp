@@ -1,8 +1,8 @@
 #include <napi.h>
 
-#include "ChromeWrapper.hpp"
-#include "FirefoxWrapper.hpp"
-#include "V8Wrapper.hpp"
+#include "chrome-wrapper.hpp"
+#include "firefox-wrapper.hpp"
+#include "v8-wrapper.hpp"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   V8Wrapper::Init(env, exports);

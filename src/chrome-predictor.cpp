@@ -1,6 +1,6 @@
-#include <z3++.h>
+#include "chrome-predictor.hpp"
 
-#include "ChromePredictor.hpp"
+#include <z3++.h>
 
 ChromePredictor::ChromePredictor(const std::vector<double> &sequence)
     : sequence(sequence),

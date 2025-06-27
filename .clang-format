@@ -1,22 +1,23 @@
-BasedOnStyle: LLVM
-AllowShortIfStatementsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: false
-ColumnLimit: 120
-BreakConstructorInitializers: BeforeColon
-ConstructorInitializerIndentWidth: 4
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
-AllowAllConstructorInitializersOnNextLine: false
-BinPackArguments: false
-AlignAfterOpenBracket: BlockIndent
-PackConstructorInitializers: Never
-IncludeBlocks: Regroup
-IncludeCategories:
-  - Regex: '^"(.*)"'
-    Priority: 1
-    SortPriority: -1
-    CaseSensitive: true
-  - Regex: '^<(.*)>'
-    Priority: 0
-    SortPriority: -2
-    CaseSensitive: true
-SortIncludes: CaseSensitive
+BasedOnStyle: Google
+#BasedOnStyle: LLVM
+#AllowShortIfStatementsOnASingleLine: true
+#AllowShortFunctionsOnASingleLine: false
+#ColumnLimit: 120
+#BreakConstructorInitializers: BeforeColon
+#ConstructorInitializerIndentWidth: 4
+#ConstructorInitializerAllOnOneLineOrOnePerLine: false
+#AllowAllConstructorInitializersOnNextLine: false
+#BinPackArguments: false
+#AlignAfterOpenBracket: BlockIndent
+#PackConstructorInitializers: Never
+#IncludeBlocks: Regroup
+#IncludeCategories:
+#  - Regex: '^"(.*)"'
+#    Priority: 1
+#    SortPriority: -1
+#    CaseSensitive: true
+#  - Regex: '^<(.*)>'
+#    Priority: 0
+#    SortPriority: -2
+#    CaseSensitive: true
+#SortIncludes: CaseSensitive

@@ -1,40 +1,34 @@
-#include <cstddef>
+#include "firefox-wrapper.hpp"
+
 #include <napi.h>
 
-#include "FirefoxPredictor.hpp"
-#include "FirefoxWrapper.hpp"
+#include <cstddef>
 
 /*
   Initialize our FirefoxWrapper.
 */
 Napi::Object FirefoxWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = FirefoxWrapper::DefineClass(
-      env,
-      "firefox",
+      env, "firefox",
       {
-          FirefoxWrapper::InstanceMethod("predictNext", &FirefoxWrapper::predictNext),
-          FirefoxWrapper::InstanceAccessor("sequence", &FirefoxWrapper::getSequence, nullptr),
-      }
-  );
+          FirefoxWrapper::InstanceMethod("predictNext",
+                                         &FirefoxWrapper::predictNext),
+          FirefoxWrapper::InstanceAccessor(
+              "sequence", &FirefoxWrapper::getSequence, nullptr),
+      });
 
   constructor = Napi::Persistent(func);
   constructor.SuppressDestruct();
 
-  exports.Set(
-      "firefox",
-      Napi::Function::New(
-          env,
-          [](const Napi::CallbackInfo &info) {
-            std::vector<napi_value> args(info.Length());
-            for (size_t i = 0; i < info.Length(); ++i) {
-              args[i] = info[i];
-            }
-            return constructor.New(args);
-          },
-          "firefox"
-      )
-  );
+  auto callCtor = [](const Napi::CallbackInfo &info) {
+    std::vector<napi_value> args(info.Length());
+    for (size_t i = 0; i < info.Length(); ++i) {
+      args[i] = info[i];
+    }
+    return constructor.New(args);
+  };
 
+  exports.Set("firefox", Napi::Function::New(env, callCtor, "firefox"));
   return exports;
 }
 
@@ -68,7 +62,8 @@ FirefoxWrapper::FirefoxWrapper(const Napi::CallbackInfo &info)
     _sequence.push_back(val.As<Napi::Number>().DoubleValue());
   }
 
-  FirefoxPredictorInstance = std::make_unique<FirefoxPredictor>(std::move(_sequence));
+  FirefoxPredictorInstance =
+      std::make_unique<FirefoxPredictor>(std::move(_sequence));
 }
 
 /*
@@ -83,7 +78,8 @@ Napi::Value FirefoxWrapper::predictNext(const Napi::CallbackInfo &info) {
 */
 Napi::Value FirefoxWrapper::getSequence(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  std::vector<double> instanceSequence = FirefoxPredictorInstance->getSequence();
+  std::vector<double> instanceSequence =
+      FirefoxPredictorInstance->getSequence();
   Napi::Array result = Napi::Array::New(env, instanceSequence.size());
 
   for (size_t i = 0; i < instanceSequence.size(); ++i) {

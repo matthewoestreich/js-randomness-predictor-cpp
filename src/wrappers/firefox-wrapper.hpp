@@ -2,18 +2,18 @@
 
 #include <napi.h>
 
-#include "ChromePredictor.hpp"
+#include "firefox-predictor.hpp"
 
-class ChromeWrapper : public Napi::ObjectWrap<ChromeWrapper> {
-public:
+class FirefoxWrapper : public Napi::ObjectWrap<FirefoxWrapper> {
+ public:
   static Napi::Object Init(Napi::Env env, Napi::Object exports);
   static Napi::FunctionReference constructor;
 
-  ChromeWrapper(const Napi::CallbackInfo &info);
+  FirefoxWrapper(const Napi::CallbackInfo &info);
 
-private:
+ private:
   Napi::Value predictNext(const Napi::CallbackInfo &info);
   Napi::Value getSequence(const Napi::CallbackInfo &info);
   Napi::Value getNodeVersion(const Napi::CallbackInfo &info);
-  std::unique_ptr<ChromePredictor> ChromePredictorInstance;
+  std::unique_ptr<FirefoxPredictor> FirefoxPredictorInstance;
 };
