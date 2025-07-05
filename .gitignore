@@ -36,5 +36,6 @@
 node_modules/
 build/
 prebuilds/
-.DS_Store/
+.DS_Store
 !third_party/z3/lib/**/*.*
+third_party/**/.DS_Store
